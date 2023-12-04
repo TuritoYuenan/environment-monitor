@@ -1,5 +1,7 @@
 # Environment Monitor
 
+![](images/preview.png)
+
 This is an IoT project for monitoring temperature and humidity using ESP32 and Blynk.
 
 ## Usage
@@ -18,3 +20,5 @@ This is an IoT project for monitoring temperature and humidity using ESP32 and B
 	- ESP32 microcontroller
 	- DHT22 sensor
 	- LED & Wires
+
+![Hardware](images/hardware-layout.png)
