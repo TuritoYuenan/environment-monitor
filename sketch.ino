@@ -20,18 +20,14 @@ void weather() {
 	// Send temperature and humidity data to Blynk
 	Blynk.virtualWrite(PIN_TEMP, temp_celsius);
 	Blynk.virtualWrite(PIN_HMDT, humidity);
-
-	// Alert if temperature is at critical level
-	if (temp_celsius > 40) {
-		Blynk.virtualWrite(PIN_CRIT, 1);
-	} else {
-		Blynk.virtualWrite(PIN_CRIT, 0);
-	}
 }
 
 void setup() {
 	// Debug console
 	Serial.begin(9600);
+
+	// Setup LED pin
+	pinMode(PIN_LED, OUTPUT);
 
 	// Authenticate Blynk
 	Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
