@@ -1,2 +1,2 @@
-# Avoid uploading actual settings with sensitive data
-settings.h
+# Ignore configuration with sensitive data
+config.h

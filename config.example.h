@@ -1,7 +1,10 @@
+// DHT22 Sensor Type
+#define DHTTYPE DHT22
+
 // ESP32 Settings
-#define DHTTYPE DHT22 // DHT sensor type
-#define PIN_DHT 13 // Pin for DHT sensor data
-#define PIN_LED 23 // Pin for Critical state LED
+#define PIN_DHT 19  // DHT sensor data pin
+#define PIN_LEDF 7  // Fahrenheit mode LED pin
+#define PIN_LEDC 9  // Critical state LED pin
 #define PIN_TEMP V0 // Temperature
 #define PIN_HMDT V1 // Humidity
 #define PIN_CRIT V2 // Critical state

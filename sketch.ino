@@ -26,8 +26,9 @@ void setup() {
 	// Debug console
 	Serial.begin(9600);
 
-	// Setup LED pin
-	pinMode(PIN_LED, OUTPUT);
+	// Setup LED pins
+	pinMode(PIN_LEDC, OUTPUT);
+	pinMode(PIN_LEDF, OUTPUT);
 
 	// Authenticate Blynk
 	Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
@@ -50,9 +51,9 @@ void loop() {
 
 	// Light up if temperature is at critical level
 	if (temp_celsius > 40) {
-		digitalWrite(PIN_LED, HIGH);
+		digitalWrite(PIN_LEDC, HIGH);
 	} else {
-		digitalWrite(PIN_LED, LOW);
+		digitalWrite(PIN_LEDC, LOW);
 	}
 
 	// Run Blynk and Blynk timer, then delay
