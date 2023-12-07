@@ -7,9 +7,9 @@ ZimmerWetter (German for "Room Weather") is an IoT project for setting up a weat
 ## Usage
 
 - Within [Blynk](https://blynk.cloud), setup a new device.
-- Copy `settings.example.h` and rename the copied file as `settings.h`
-- Configure the settings to your preferences
-- Load the files `sketch.ino`, `settings.h`, `libraries.txt` and `diagram.json` to a Wokwi project
+- Copy `config.example.h` and rename the copied file as `config.h`.
+- Edit the config file to your preferences.
+- Load the files `sketch.ino`, `config.h`, `libraries.txt` and `diagram.json` into a Wokwi project.
 - To use in-real-life, connect an ESP32 board wired to a DHT22 sensor and an LED, then run the file `sketch.ino` in Arduino IDE/CLI.
 
 ## Tech stack

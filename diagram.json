@@ -5,8 +5,8 @@
 	"parts": [
 		{ "type": "board-esp32-c3-devkitm-1", "id": "esp", "top": 20.82, "left": 111.3, "rotate": 90, "attrs": {} },
 		{ "type": "wokwi-dht22", "id": "dht1", "top": 29.1, "left": 4.2, "attrs": {} },
-		{ "type": "wokwi-led", "id": "led1", "top": 155.2, "left": 138.6, "rotate": 180, "attrs": { "color": "yellow" } },
-		{ "type": "wokwi-led", "id": "led2", "top": 155.2, "left": 167.4, "rotate": 180, "attrs": { "color": "red" } },
+		{ "type": "wokwi-led", "id": "led1", "top": 155.2, "left": 138.6, "rotate": 180, "attrs": { "color": "red" } },
+		{ "type": "wokwi-led", "id": "led2", "top": 155.2, "left": 167.4, "rotate": 180, "attrs": { "color": "yellow" } },
 		{ "type": "wokwi-led", "id": "led3", "top": 8.4, "left": 174.2, "rotate": 270, "attrs": { "color": "green", "flip": "1" } }
 	],
 	"connections": [
@@ -20,7 +20,8 @@
 		[ "esp:3V3.1", "led3:A", "green", [ "v0" ] ],
 		[ "dht1:GND", "esp:GND.6", "black", [ "v9.6", "h38.4" ] ],
 		[ "dht1:SDA", "esp:19", "green", [ "v19.2", "h67.3" ] ],
-		[ "dht1:VCC", "esp:5V.2", "red", [ "v19.2", "h-28.8", "v-144", "h105.6" ] ]
+		[ "dht1:VCC", "esp:5V.2", "red", [ "v19.2", "h-28.8", "v-144", "h105.6" ] ],
+		[ "esp:8", "led2:A", "green", [ "v0" ] ]
 	],
 	"dependencies": {}
 }
