@@ -9,6 +9,7 @@
 #define PIN_TEMP V0 // Temperature
 #define PIN_HMDT V1 // Humidity
 #define PIN_CRED V2 // Code Red
+#define PIN_DESC V3 // Weather Description
 
 // Blynk Settings
 #define BLYNK_PRINT Serial
