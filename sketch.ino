@@ -76,6 +76,12 @@ bool codeRed(float temperature, bool useFahrenheit) {
 	return false;
 }
 
+String categoriseByHumid(float humidity, String low, String avg, String high) {
+	if (humidity < 20) return low;
+	else if (humidity < 60) return avg;
+	else return high;
+}
+
 // Describe the current weather condition
 String describeWeather(float temperature, float humidity, bool useFahrenheit) {
 	// Convert to Celsius and try again if using Fahrenheit
@@ -86,25 +92,15 @@ String describeWeather(float temperature, float humidity, bool useFahrenheit) {
 
 	// Conditional jargon, will tidy later
 	if (temperature < -15) {
-		if (humidity < 20) return "Crisp";
-		else if (humidity < 60) return "Freezing";
-		else return "Icy";
+		return categoriseByHumid(humidity, "Crisp", "Freezing", "Icy");
 	} else if (temperature < 20) {
-		if (humidity < 20) return "Harsh";
-		else if (humidity < 60) return "Cold";
-		else return "Snowy";
+		return categoriseByHumid(humidity, "Harsh", "Cold", "Snowy");
 	} else if (temperature < 30) {
-		if (humidity < 20) return "Droughty";
-		else if (humidity < 60) return "Temperate";
-		else return "Humid";
+		return categoriseByHumid(humidity, "Droughty", "Temperate", "Humid");
 	} else if (temperature < 50) {
-		if (humidity < 20) return "Bone-dry";
-		else if (humidity < 60) return "Hot";
-		else return "Sultry";
+		return categoriseByHumid(humidity, "Bone-dry",  "Hot", "Sultry");
 	} else {
-		if (humidity < 20) return "Desert-like";
-		else if (humidity < 60) return "Blistering";
-		else return "Oven-like";
+		return categoriseByHumid(humidity, "Desert-like", "Blistering", "Oven-like");
 	}
 }
 

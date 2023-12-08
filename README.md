@@ -1,4 +1,4 @@
-# ZimmerWetter - Demand Your Weather Back!
+# ZimmerWetter - Reliable, Self-Sufficient Weather Station
 
 > This is a university workshop project
 
