@@ -96,7 +96,3 @@ String describeWeather(float temperature, float humidity, bool useFahrenheit) {
 	else if (temperature < 55) return multiplexHumidity(humidity, "Bone-dry",  "Hot", "Sultry");
 	else return multiplexHumidity(humidity, "Desert-like", "Blistering", "Oven-like");
 }
-
-BLYNK_CONNECTED() {
-	Blynk.syncAll();
-}
