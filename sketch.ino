@@ -43,8 +43,8 @@ void setup() {
 	// Authenticate Blynk
 	Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
 
-	// Send data every 0.9 seconds
-	timer.setInterval(900L, sendData);
+	// Send data every 1 second
+	timer.setInterval(1000L, sendData);
 }
 
 void loop() {
@@ -66,7 +66,7 @@ void loop() {
 	digitalWrite(PIN_LEDC, severity);
 
 	// Run Blynk and Blynk timer, then delay
-	Blynk.run(); timer.run(); delay(100);
+	Blynk.run(); timer.run(); delay(1000);
 }
 
 // Activate Code Red if temperature is over 50 Celsius
@@ -76,7 +76,7 @@ bool codeRed(float temperature, bool useFahrenheit) {
 	return false;
 }
 
-String categoriseByHumid(float humidity, String low, String avg, String high) {
+String multiplexHumidity(float humidity, String low, String avg, String high) {
 	if (humidity < 20) return low;
 	else if (humidity < 60) return avg;
 	else return high;
@@ -90,18 +90,11 @@ String describeWeather(float temperature, float humidity, bool useFahrenheit) {
 		return describeWeather(tempC, humidity, false);
 	}
 
-	// Conditional jargon, will tidy later
-	if (temperature < -15) {
-		return categoriseByHumid(humidity, "Crisp", "Freezing", "Icy");
-	} else if (temperature < 20) {
-		return categoriseByHumid(humidity, "Harsh", "Cold", "Snowy");
-	} else if (temperature < 30) {
-		return categoriseByHumid(humidity, "Droughty", "Temperate", "Humid");
-	} else if (temperature < 50) {
-		return categoriseByHumid(humidity, "Bone-dry",  "Hot", "Sultry");
-	} else {
-		return categoriseByHumid(humidity, "Desert-like", "Blistering", "Oven-like");
-	}
+	if (temperature < -15) return multiplexHumidity(humidity, "Crisp", "Freezing", "Icy");
+	else if (temperature < 17) return multiplexHumidity(humidity, "Harsh", "Cold", "Snowy");
+	else if (temperature < 35) return multiplexHumidity(humidity, "Droughty", "Temperate", "Humid");
+	else if (temperature < 55) return multiplexHumidity(humidity, "Bone-dry",  "Hot", "Sultry");
+	else return multiplexHumidity(humidity, "Desert-like", "Blistering", "Oven-like");
 }
 
 BLYNK_CONNECTED() {
