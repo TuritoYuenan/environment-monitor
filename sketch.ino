@@ -1,5 +1,21 @@
-// Include settings
-#include "config.h"
+// Settings
+#define BLYNK_PRINT Serial
+#define TYPE_DHT DHT22 // DHT22 Sensor Type
+
+// Blynk virtual pins
+#define PIN_TEMP V0 // Temperature
+#define PIN_HMDT V1 // Humidity
+#define PIN_CRED V2 // Code Red
+#define PIN_DESC V3 // Weather Description
+
+// ESP32 pins
+#define PIN_DHT 19  // DHT sensor data
+#define PIN_LEDC 7  // Severe LED
+#define PIN_LEDF 8  // Fahrenheit LED
+#define PIN_UNIT 9  // Unit pin
+
+// Include secrets
+#include "secrets.h"
 
 // Include libraries
 #include <string>
@@ -12,7 +28,7 @@
 BlynkTimer timer;
 
 // Initialise DHT22 sensor
-DHT dht(PIN_DHT, DHTTYPE);
+DHT dht(PIN_DHT, TYPE_DHT);
 
 // Initialise sensor humidity and temperature
 float temperature, humidity;

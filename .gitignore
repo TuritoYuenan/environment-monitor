@@ -1,2 +1,2 @@
-# Ignore configuration with sensitive data
-config.h
+# Avoid uploading secret file
+secrets.h
