@@ -34,6 +34,19 @@ DHT dht(PIN_DHT, TYPE_DHT);
 float temperature, humidity;
 bool useFahrenheit;
 
+void readData() {
+	// Determine temperature unit
+	useFahrenheit = digitalRead(PIN_UNIT) == 1 ? true : false;
+
+	// Gather temperature and humidity values
+	humidity = dht.readHumidity();
+	temperature = dht.readTemperature(useFahrenheit);
+
+	// Light up LED if Code Red
+	int severity = codeRed(temperature, useFahrenheit) ? HIGH : LOW;
+	digitalWrite(PIN_LEDC, severity);
+}
+
 // Send temperature and humidity data to Blynk
 void sendData() {
 	int codeRedStatus = codeRed(temperature, useFahrenheit);
@@ -60,29 +73,13 @@ void setup() {
 	Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
 
 	// Send data every 1 second
+	timer.setInterval(500L, readData);
 	timer.setInterval(1000L, sendData);
 }
 
 void loop() {
-	// Determine temperature unit
-	useFahrenheit = digitalRead(PIN_UNIT) == 1 ? true : false;
-
-	// Gather temperature and humidity values
-	humidity = dht.readHumidity();
-	temperature = dht.readTemperature(useFahrenheit);
-
-	// Exit early to try again if any value failed to be read
-	if (isnan(humidity) || isnan(temperature)) {
-		Serial.println("# Unable to get value from DHT sensor!");
-		return;
-	}
-
-	// Light up LED if Code Red
-	int severity = codeRed(temperature, useFahrenheit) ? HIGH : LOW;
-	digitalWrite(PIN_LEDC, severity);
-
 	// Run Blynk and Blynk timer, then delay
-	Blynk.run(); timer.run(); delay(1000);
+	Blynk.run(); timer.run(); delay(100);
 }
 
 // Activate Code Red if temperature is over 50 Celsius
