@@ -10,9 +10,9 @@
 
 // ESP32 pins
 #define PIN_DHT 19  // DHT sensor data
-#define PIN_LEDC 7  // Severe LED
+#define PIN_LEDC 7  // Code Red LED
 #define PIN_LEDF 8  // Fahrenheit LED
-#define PIN_UNIT 9  // Unit pin
+#define PIN_UNIT 9  // Temperature Unit
 
 // Include secrets
 #include "secrets.h"
@@ -24,15 +24,34 @@
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
 
-// Initialise Blynk timer
-BlynkTimer timer;
-
-// Initialise DHT22 sensor
-DHT dht(PIN_DHT, TYPE_DHT);
+DHT dht(PIN_DHT, TYPE_DHT); // Setup DHT22 sensor
+BlynkTimer timer; // Setup Blynk timer
 
 // Initialise sensor humidity and temperature
 float temperature, humidity;
 bool useFahrenheit;
+
+void setup() {
+	// Debug console
+	Serial.begin(9600);
+
+	// Setup LED pins
+	pinMode(PIN_LEDC, OUTPUT);
+	pinMode(PIN_LEDF, OUTPUT);
+	pinMode(PIN_UNIT, INPUT_PULLUP);
+
+	// Authenticate Blynk
+	Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
+
+	// Send data every 1 second
+	timer.setInterval(500L, readData);
+	timer.setInterval(1000L, sendData);
+}
+
+void loop() {
+	// Run Blynk and Blynk timer, then delay
+	Blynk.run(); timer.run(); delay(100);
+}
 
 void readData() {
 	// Determine temperature unit
@@ -60,28 +79,6 @@ void sendData() {
 	Blynk.endGroup();
 }
 
-void setup() {
-	// Debug console
-	Serial.begin(9600);
-
-	// Setup LED pins
-	pinMode(PIN_LEDC, OUTPUT);
-	pinMode(PIN_LEDF, OUTPUT);
-	pinMode(PIN_UNIT, INPUT_PULLUP);
-
-	// Authenticate Blynk
-	Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASS);
-
-	// Send data every 1 second
-	timer.setInterval(500L, readData);
-	timer.setInterval(1000L, sendData);
-}
-
-void loop() {
-	// Run Blynk and Blynk timer, then delay
-	Blynk.run(); timer.run(); delay(100);
-}
-
 // Activate Code Red if temperature is over 50 Celsius
 bool codeRed(float temperature, bool useFahrenheit) {
 	if (temperature > 50 && !useFahrenheit) return true;
@@ -89,7 +86,7 @@ bool codeRed(float temperature, bool useFahrenheit) {
 	return false;
 }
 
-String multiplexHumidity(float humidity, String low, String avg, String high) {
+String multiplexHumidity(float humidity, char low[], char avg[], char high[]) {
 	if (humidity < 20) return low;
 	else if (humidity < 60) return avg;
 	else return high;
