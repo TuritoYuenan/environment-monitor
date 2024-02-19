@@ -1,0 +1,12 @@
+DOXYFILE_ENCODING   = UTF-8
+PROJECT_NAME        = "Minh Triet's Weather Station"
+PROJECT_NUMBER      = 0.7.0
+OUTPUT_DIRECTORY    = ./docs
+EXTRACT_ALL         = YES
+GENERATE_HTML       = YES
+GENERATE_LATEX      = NO
+HTML_FORMULA_FORMAT = svg
+DOT_IMAGE_FORMAT    = svg
+INTERACTIVE_SVG     = YES
+EXTENSION_MAPPING   = ino=C++
+FILE_PATTERNS       = *.c *.cpp *.c++ *.ino *.h *.md

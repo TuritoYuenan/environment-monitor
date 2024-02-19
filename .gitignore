@@ -1,2 +1,11 @@
+# Arduino build directories
+build/
+
+# Doxygen documentations should be compiled per-user
+docs/
+
+# C/C++ IntelliSense configs are local only
+c_cpp_properties.json
+
 # Avoid uploading secret file
 secrets.h

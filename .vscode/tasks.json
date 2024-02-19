@@ -1,0 +1,19 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Generate documentation",
+			"type": "shell",
+			"command": "doxygen",
+			"problemMatcher": []
+		},
+		{
+			"label": "Open documentation",
+			"type": "shell",
+			"command": "start ./docs/html/index.html",
+			"problemMatcher": []
+		}
+	]
+}
