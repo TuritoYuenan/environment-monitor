@@ -3,12 +3,20 @@
 
 /// @brief Data received from the SEN0186 Weather Station Kit
 struct WeatherData {
-	int windDirection; // Wind Direction (deg)
-	float windSpeedAvg; // Average Wind Speed (m/s)
-	float windSpeedMax; // Maximum Wind Speed (m/s)
-	float temperature; // Temperature (deg C)
-	float rainfallH; // Rainfall in 1 hour (mm)
-	float rainfallD; // Rainfall in 1 day (mm)
-	int humidity; // Humidity (%)
-	float pressure; // Pressure, barometric (hPa)
+	/// @brief Wind Direction (deg)
+	int windDirection;
+	/// @brief Average Wind Speed (m/s)
+	float windSpeedAvg;
+	/// @brief Maximum Wind Speed (m/s)
+	float windSpeedMax;
+	/// @brief Temperature (deg C)
+	float temperature;
+	/// @brief Rainfall in 1 hour (mm)
+	float rainfallH;
+	/// @brief Rainfall in 1 day (mm)
+	float rainfallD;
+	/// @brief Humidity (%)
+	int humidity;
+	/// @brief Pressure, barometric (hPa)
+	float pressure;
 };

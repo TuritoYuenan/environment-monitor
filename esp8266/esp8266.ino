@@ -21,7 +21,7 @@ WeatherData weatherData;
 ESP8266WebServer server(80);
 
 /// @brief Web server HTML template
-String webpageTemplate = R"(<!DOCTYPE html><html lang='en'><head>
+String htmlTemplate = R"(<!DOCTYPE html><html lang='en'><head>
 	<meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>
 	<title>Zweiten Wetter</title><link rel='icon' href='data:,'><style>
 		#title {display: grid; align-content: center; text-align: center;} #title > * {margin-block: 0.5rem;}
@@ -33,7 +33,7 @@ String webpageTemplate = R"(<!DOCTYPE html><html lang='en'><head>
 		div, section, footer {padding: 1rem 2rem; border-radius: 1rem; background: white;}
 		img {margin: auto; padding-inline: 1rem; display: block;}
 	</style><script>setInterval(() => {var x = new XMLHttpRequest(); x.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {htmlTemplate.body.innerHTML = this.responseText}
+		if (this.readyState == 4 && this.status == 200) {document.body.innerHTML = this.responseText}
 	}; x.open('GET', '/', true); x.send(); }, 1000);</script>
 </head><body><header class='grid'>
 		<div><img src='./assets/swinburne.svg' alt='Swinburne University Logo'></div>
@@ -58,7 +58,7 @@ void setup()
 	connectWiFi(WIFI_NAME, WIFI_PASS);
 
 	// Setup web server
-	server.on("/", []() {server.send(200, "text/html", hydrateHTML(webpageTemplate, weatherData));});
+	server.on("/", []() {server.send(200, "text/html", hydrateHTML(htmlTemplate, weatherData));});
 	server.onNotFound([]() {server.send(404, "text/plain", "there's only 1 page bro");});
 	server.begin();
 
@@ -109,9 +109,24 @@ int charToInt(char* buffer, int start, int stop)
 	return result;
 }
 
+/// @deprecated Will be replaced by Serial.readBytes
+/// @brief Get raw weather station data
+/// @param buffer Variable to save raw data into
+void getData(char* buffer)
+{
+	for (int i = 0; i < 35; i++) {
+		if (Serial.available()) {
+			buffer[i] = Serial.read();
+		} else {
+			i--;
+		}
+		if (buffer[0] != 'c') { i = -1; }
+	}
+}
+
 /// @brief Organise raw data received from the weather station to structured data
-/// @param buffer Raw weather station data
 /// @param data Structured weather station data
+/// @param buffer Raw weather station data
 void storeData(WeatherData data, char* buffer)
 {
 	data.windDirection = charToInt(buffer, 1, 3);
@@ -155,32 +170,19 @@ void connectWiFi(const char* ssid, const char* password)
 	Serial.printf("\nConnected! IP is %s\n", WiFi.localIP());
 }
 
+/// @brief Fill weather station data into a HTML file for web server
+/// @param html A HTML template with placeholders to fill in data
 /// @param data Structured weather station data
 /// @return A HTML webpage with the numbers plugged in
-String hydrateHTML(String htmlTemplate, WeatherData data)
+String hydrateHTML(String html, WeatherData data)
 {
-	htmlTemplate.replace("{PRSR}", String(data.pressure));
-	htmlTemplate.replace("{HMDT}", String(data.humidity));
-	htmlTemplate.replace("{TEMP}", String(data.temperature));
-	htmlTemplate.replace("{RNFH}", String(data.rainfallH));
-	htmlTemplate.replace("{RNFD}", String(data.rainfallD));
-	htmlTemplate.replace("{WSAG}", String(data.windSpeedAvg));
-	htmlTemplate.replace("{WSMX}", String(data.windSpeedMax));
-	htmlTemplate.replace("{WDRT}", String(data.windDirection));
-	return htmlTemplate;
-}
-
-/// @deprecated Will be replaced by Serial.readBytes
-/// @brief Get raw weather station data
-/// @param buffer Variable to save raw data into
-void getData(char* buffer)
-{
-	for (int i = 0; i < 35; i++) {
-		if (Serial.available()) {
-			buffer[i] = Serial.read();
-		} else {
-			i--;
-		}
-		if (buffer[0] != 'c') { i = -1; }
-	}
+	html.replace("{PRSR}", String(data.pressure));
+	html.replace("{HMDT}", String(data.humidity));
+	html.replace("{TEMP}", String(data.temperature));
+	html.replace("{RNFH}", String(data.rainfallH));
+	html.replace("{RNFD}", String(data.rainfallD));
+	html.replace("{WSAG}", String(data.windSpeedAvg));
+	html.replace("{WSMX}", String(data.windSpeedMax));
+	html.replace("{WDRT}", String(data.windDirection));
+	return html;
 }

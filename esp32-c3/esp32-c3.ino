@@ -66,7 +66,7 @@ void readData() {
 	digitalWrite(PIN_LEDC, severity);
 }
 
-// Send temperature and humidity data to Blynk
+/// @brief Send temperature and humidity data to Blynk
 void sendData() {
 	int codeRedStatus = codeRed(temperature, useFahrenheit);
 	String description = describeWeather(temperature, humidity, useFahrenheit);
@@ -79,7 +79,7 @@ void sendData() {
 	Blynk.endGroup();
 }
 
-// Activate Code Red if temperature is over 50 Celsius
+/// @brief Activate Code Red if temperature is over 50 Celsius
 bool codeRed(float temperature, bool useFahrenheit) {
 	if (temperature > 50 && !useFahrenheit) return true;
 	if (temperature > 122 && useFahrenheit) return true;
@@ -92,7 +92,7 @@ String multiplexHumidity(float humidity, char low[], char avg[], char high[]) {
 	else return high;
 }
 
-// Describe the current weather condition
+/// @brief Describe the current weather condition
 String describeWeather(float temperature, float humidity, bool useFahrenheit) {
 	// Convert to Celsius and try again if using Fahrenheit
 	if (useFahrenheit) {

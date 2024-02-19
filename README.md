@@ -1,8 +1,6 @@
 # ZimmerWetter 2: Electric Boogaloo
 
-> This is a university IoT project
-
-This is an IoT project about building a simple, easy to use weather station that provides you with reliable data of your own region, removing the need for other weather services
+This is a university IoT project about building a simple, easy to use weather station that provides you with reliable data of your own region, removing the need for other weather services
 
 > [Legacy version using ESP32-C3, DHT22 and Blynk](./esp32-c3/)
 
