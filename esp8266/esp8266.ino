@@ -23,7 +23,7 @@ ESP8266WebServer server(80);
 /// @brief Web server HTML template
 String htmlTemplate = R"(<!DOCTYPE html><html lang='en'><head>
 	<meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>
-	<title>Zweiten Wetter</title><link rel='icon' href='data:,'><style>
+	<title>Zimmer Wetter</title><link rel='icon' href='data:,'><style>
 		#title {display: grid; align-content: center; text-align: center;} #title > * {margin-block: 0.5rem;}
 		.grid {display: grid; gap: 1rem;} @media (width <= 900px) {.grid {display: flex; flex-direction: column;}}
 		body {max-width: 1280px; margin: auto; padding: 1rem; background: #ED1C2E; font-family: system-ui, sans-serif;}
@@ -36,7 +36,7 @@ String htmlTemplate = R"(<!DOCTYPE html><html lang='en'><head>
 		if (this.readyState == 4 && this.status == 200) {document.body.innerHTML = this.responseText}
 	}; x.open('GET', '/', true); x.send(); }, 1000);</script>
 </head><body><header class='grid'>
-		<div><img src='./assets/swinburne.svg' alt='Swinburne University Logo'></div>
+		<div><img src='https://raw.githubusercontent.com/TuritoYuenan/zimmer-wetter/init/web-server/swinburne.svg' alt='Swinburne University Logo'></div>
 		<div id='title'><h1>Minh Triet's Weather Station</h1><h2>Made with Arduino Uno, ESP8266, SEN0186, and passion🔥</h2></div>
 	</header><main class='grid'>
 		<section style='grid-area: tp'><h2>Temperature</h2><p>{TEMP} &deg;C</p></section>
@@ -138,7 +138,7 @@ void printData(WeatherData data)
 	Serial.printf("Rainfall in 1h: %f mm\n", data.rainfallH);
 	Serial.printf("Rainfall in 1d: %f mm\n", data.rainfallD);
 	Serial.printf("Temperature: %f deg C\n", data.temperature);
-	Serial.printf("Humidity: %d %\n", data.humidity);
+	Serial.printf("Humidity: %d percents\n", data.humidity);
 	Serial.printf("Pressure: %f hPa\n", data.pressure);
 	Serial.println("");
 }
@@ -148,7 +148,7 @@ void printData(WeatherData data)
 /// @param password WiFi password
 void connectWiFi(const char* ssid, const char* password)
 {
-	Serial.printf("Connecting to WiFi %s", ssid);
+	Serial.printf("\n\n\nConnecting to WiFi %s", ssid);
 	WiFi.begin(ssid, password);
 
 	while (WiFi.status() != WL_CONNECTED) {
@@ -156,7 +156,8 @@ void connectWiFi(const char* ssid, const char* password)
 		Serial.print(".");
 	}
 
-	Serial.printf("\nConnected! IP is %s\n", WiFi.localIP());
+	Serial.print("\nConnected! IP is");
+	Serial.println(WiFi.localIP());
 }
 
 /// @brief Fill weather station data into a HTML file for web server
