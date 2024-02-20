@@ -109,21 +109,6 @@ int charToInt(char* buffer, int start, int stop)
 	return result;
 }
 
-/// @deprecated Will be replaced by Serial.readBytes
-/// @brief Get raw weather station data
-/// @param buffer Variable to save raw data into
-void getData(char* buffer)
-{
-	for (int i = 0; i < 35; i++) {
-		if (Serial.available()) {
-			buffer[i] = Serial.read();
-		} else {
-			i--;
-		}
-		if (buffer[0] != 'c') { i = -1; }
-	}
-}
-
 /// @brief Organise raw data received from the weather station to structured data
 /// @param data Structured weather station data
 /// @param buffer Raw weather station data
