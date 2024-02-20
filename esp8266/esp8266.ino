@@ -73,7 +73,7 @@ void loop()
 	if (stationData[0] != 'c') { return; }
 
 	// Convert and store weather station data
-	storeData(weatherData, stationData);
+	weatherData = storeData(stationData);
 
 	// Print out data. Might be removed in favor of web server
 	printData(weatherData);
@@ -112,8 +112,10 @@ int charToInt(char* buffer, int start, int stop)
 /// @brief Organise raw data received from the weather station to structured data
 /// @param data Structured weather station data
 /// @param buffer Raw weather station data
-void storeData(WeatherData data, char* buffer)
+WeatherData storeData(char* buffer)
 {
+	WeatherData data;
+
 	data.windDirection = charToInt(buffer, 1, 3);
 	data.windSpeedAvg = charToInt(buffer, 5, 7) * 0.44704;
 	data.windSpeedMax = charToInt(buffer, 9, 11) * 0.44704;
@@ -122,6 +124,8 @@ void storeData(WeatherData data, char* buffer)
 	data.rainfallD = charToInt(buffer, 21, 23) * 25.40 * 0.01;
 	data.humidity = charToInt(buffer, 25, 26);
 	data.pressure = charToInt(buffer, 28, 32) / 10.00;
+
+	return data;
 }
 
 /// @brief Print out weather station data
