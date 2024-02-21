@@ -17,6 +17,6 @@ struct WeatherData {
 	float rainfallD;
 	/// @brief Humidity (%)
 	int humidity;
-	/// @brief Pressure, barometric (hPa)
-	float pressure;
+	/// @brief Pressure (Pa)
+	int pressure;
 };

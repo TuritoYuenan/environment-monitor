@@ -41,7 +41,7 @@ String htmlTemplate = R"(<!DOCTYPE html><html lang='en'><head>
 	</header><main class='grid'>
 		<section style='grid-area: tp'><h2>Temperature</h2><p>{TEMP} &deg;C</p></section>
 		<section style='grid-area: ht'><h2>Humidity</h2><p>{HMDT} %</p></section>
-		<section style='grid-area: ps'><h2>Barometric Pressure</h2><p>{PRSR} hPa</p></section>
+		<section style='grid-area: ps'><h2>Barometric Pressure</h2><p>{PRSR} Pa</p></section>
 		<section style='grid-area: rn'><h2>Rainfall (1 Hour)</h2><p>{RNFH} mm</p><h2>Rainfall (1 Day)</h2><p>{RNFD} mm</p></section>
 		<section style='grid-area: wd'><h2>Wind Direction</h2><p>{WDRT} degrees</p>
 			<h2>Average Wind Speed</h2><p>{WSAG} m/s</p><h2>Maximum Wind Speed</h2><p>{WSMX} m/s</p></section>
@@ -109,9 +109,9 @@ int charToInt(char* buffer, int start, int stop)
 	return result;
 }
 
-/// @brief Organise raw data received from the weather station to structured data
-/// @param data Structured weather station data
+/// @brief Convert raw data from the weather station to structured data
 /// @param buffer Raw weather station data
+/// @return data Structured weather station data
 WeatherData storeData(char* buffer)
 {
 	WeatherData data;
@@ -123,7 +123,7 @@ WeatherData storeData(char* buffer)
 	data.rainfallH = charToInt(buffer, 17, 19) * 25.40 * 0.01;
 	data.rainfallD = charToInt(buffer, 21, 23) * 25.40 * 0.01;
 	data.humidity = charToInt(buffer, 25, 26);
-	data.pressure = charToInt(buffer, 28, 32) / 10.00;
+	data.pressure = charToInt(buffer, 28, 32) * 10.00;
 
 	return data;
 }
@@ -132,15 +132,13 @@ WeatherData storeData(char* buffer)
 /// @param data Structured weather station data
 void printData(WeatherData data)
 {
-	Serial.printf("Wind Direction: %d deg\n", data.windDirection);
-	Serial.printf("Avg Wind Speed: %f m/s\n", data.windSpeedAvg);
-	Serial.printf("Max Wind Speed: %f m/s\n", data.windSpeedMax);
-	Serial.printf("Rainfall in 1h: %f mm\n", data.rainfallH);
-	Serial.printf("Rainfall in 1d: %f mm\n", data.rainfallD);
+	Serial.println("");
 	Serial.printf("Temperature: %f deg C\n", data.temperature);
 	Serial.printf("Humidity: %d percents\n", data.humidity);
-	Serial.printf("Pressure: %f hPa\n", data.pressure);
-	Serial.println("");
+	Serial.printf("Pressure: %d Pa\n", data.pressure);
+	Serial.printf("Rainfall: (1h) %f mm, (1d) %f mm\n", data.rainfallH, data.rainfallD);
+	Serial.printf("Wind Speed: avg %f m/s, max %f m/s\n", data.windSpeedAvg, data.windSpeedMax);
+	Serial.printf("Wind Direction: %d deg\n", data.windDirection);
 }
 
 /// @brief Connect to WiFi
@@ -148,7 +146,7 @@ void printData(WeatherData data)
 /// @param password WiFi password
 void connectWiFi(const char* ssid, const char* password)
 {
-	Serial.printf("\n\n\nConnecting to WiFi %s", ssid);
+	Serial.printf("\n\WiFi is %s. Connecting.", ssid);
 	WiFi.begin(ssid, password);
 
 	while (WiFi.status() != WL_CONNECTED) {
@@ -156,8 +154,10 @@ void connectWiFi(const char* ssid, const char* password)
 		Serial.print(".");
 	}
 
-	Serial.print("\nConnected! IP is");
-	Serial.println(WiFi.localIP());
+	if (WiFi.status() == WL_CONNECTED) {
+		Serial.print("\nConnected! View your weather at: ");
+		Serial.println(WiFi.localIP());
+	}
 }
 
 /// @brief Fill weather station data into a HTML file for web server
