@@ -7,7 +7,6 @@
  * @ref https://pijaeducation.com/serial-print-and-printf-solved
 */
 
-#include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include "WetterLib.h"
 
@@ -19,6 +18,15 @@ WeatherData weatherData;
 
 /// @brief Web server
 ESP8266WebServer server(80);
+
+/// @brief Fixed IP Address to access web server
+IPAddress address(69, 69, 69, 69);
+
+/// @brief Default gateway
+IPAddress gateway(69, 69, 69, 1);
+
+/// @brief Subnet mask
+IPAddress subnet(255, 255, 255, 0);
 
 /// @brief Web server HTML template
 String htmlTemplate = R"(<!DOCTYPE html><html lang='en'><head>
@@ -146,7 +154,12 @@ void printData(WeatherData data)
 /// @param password WiFi password
 void connectWiFi(const char* ssid, const char* password)
 {
-	Serial.printf("\n\WiFi is %s. Connecting.", ssid);
+	Serial.printf("\nWiFi is %s. Connecting.", ssid);
+
+	if (!WiFi.config(address, gateway, subnet)) {
+		Serial.println("Could not configure web server");
+	}
+
 	WiFi.begin(ssid, password);
 
 	while (WiFi.status() != WL_CONNECTED) {
