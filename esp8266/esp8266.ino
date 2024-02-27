@@ -12,6 +12,7 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 
+#include "certs.h"
 #include "secrets.h"
 #include "wetter-lib.h"
 
@@ -31,6 +32,7 @@ BlockNot logTimer(1000);
 void setup()
 {
 	Serial.begin(9600);
+	Serial.setDebugOutput(true);
 
 	// Connect to WiFi
 	connectWiFi(WIFI_NAME, WIFI_PASS);
@@ -52,8 +54,7 @@ void loop()
 	Serial.println(JSON);
 
 	// Send data to Astra DB
-	if (sendTimer.TRIGGERED) { sendData(JSON, DB_ENDPOINT, ASTRA_TOKEN); }
-
+	if (sendTimer.TRIGGERED) { sendData(JSON); }
 }
 
 /// @brief Connect to WiFi
@@ -62,6 +63,7 @@ void loop()
 void connectWiFi(const char* ssid, const char* password)
 {
 	Serial.printf("\nWiFi is %s. Connecting.", ssid);
+	WiFi.hostname(F("ZimmerWetter"));
 	WiFi.begin(ssid, password);
 
 	while (WiFi.status() != WL_CONNECTED) {
@@ -123,20 +125,20 @@ WeatherData storeData(char* buffer)
 
 /// @brief Send weather station data to an Astra database
 /// @param data Structured weather station data
-/// @param endpoint URL address where the database receives data
-/// @param token Token to authorise to the database
-void sendData(String JSON, const char* endpoint, const char* token)
+void sendData(String json)
 {
-	WiFiClientSecure client;
+	std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
 	HTTPClient https;
 
+	client->setFingerprint(fingerprint_astra_datastax_com);
+
 	// Create a HTTP request with headers
-	https.begin(client, endpoint);
+	https.begin(*client, astradb_host, astradb_port);
 	https.addHeader("content-type", "application/json");
-	https.addHeader("x-cassandra-token", token);
+	https.addHeader("x-cassandra-token", ASTRA_TOKEN);
 
 	// Send HTTP POST request
-	int responseCode = https.POST(JSON);
+	int responseCode = https.POST(json);
 
 	if (responseCode > 0) {
 		Serial.print("Request sent! Code: "); Serial.println(responseCode);
