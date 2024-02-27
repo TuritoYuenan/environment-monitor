@@ -11,10 +11,12 @@
 #include <WiFiClientSecureBearSSL.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 
-#include "certs.h"
 #include "secrets.h"
 #include "wetter-lib.h"
+#include "ssl-certificate.h"
 
 /// @brief Raw data received from the weather station
 char stationData[35];
@@ -28,6 +30,9 @@ BlockNot sendTimer(5000);
 /// @brief Timer for data printing routine
 BlockNot logTimer(1000);
 
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "asia.pool.ntp.org", UTC_OFFSET);
+
 /// @brief Tasks to do once at startup
 void setup()
 {
@@ -36,25 +41,34 @@ void setup()
 
 	// Connect to WiFi
 	connectWiFi(WIFI_NAME, WIFI_PASS);
+
+	timeClient.begin();
 }
 
 /// @brief Tasks to routinely do
 void loop()
 {
+	timeClient.update();
+	unsigned long timestamp = timeClient.getEpochTime();
+
 	// Get data from weather station. Redo if format is wrong
-	Serial.readBytes(stationData, sizeof(stationData));
-	if (stationData[0] != 'c') { return; }
+	// Serial.readBytes(stationData, sizeof(stationData));
+	// if (stationData[0] != 'c') { return; }
 
 	// Store weather station data
-	weatherData = storeData(stationData);
-	String JSON = createJSON(weatherData);
+	// weatherData = storeData(stationData);
+	weatherData = generateData();
+	String JSON = createJSON(weatherData, timestamp);
 
 	// Print out data.
-	// printData(weatherData);
-	Serial.println(JSON);
+	if (logTimer.triggered()) {
+		Serial.println(JSON);
+	}
 
 	// Send data to Astra DB
-	if (sendTimer.TRIGGERED) { sendData(JSON); }
+	if (sendTimer.triggered()) {
+		sendData(JSON);
+	}
 }
 
 /// @brief Connect to WiFi
@@ -123,6 +137,23 @@ WeatherData storeData(char* buffer)
 	return data;
 }
 
+/// @brief Randomly generate fake weather data for testing
+/// @return Generated structured weather station data
+WeatherData generateData() {
+	WeatherData data;
+
+	data.windDirection = random(360);
+	data.windSpeedAvg = random(100);
+	data.windSpeedMax = random(100);
+	data.temperature = random(-30, 70);
+	data.rainfallH = random(100);
+	data.rainfallD = random(100);
+	data.humidity = random(100);
+	data.pressure = random(100000, 105000);
+
+	return data;
+}
+
 /// @brief Send weather station data to an Astra database
 /// @param data Structured weather station data
 void sendData(String json)
@@ -154,18 +185,19 @@ void sendData(String json)
 /// @brief Create a JSON document from weather station data
 /// @param data Structured weather station data
 /// @return A JSON document containing a timestamp field and data fields
-String createJSON(WeatherData data)
+String createJSON(WeatherData data, unsigned long timestamp)
 {
-	String JSONTemplate = R"({
-		"date": "2024-02-26T14:14:14.000Z",
+	String JSONTemplate = F(R"({
+		"date": "{TIME}",
 		humidity: {HMDT},
 		pressure: {PRSR},
 		temperature: {TEMP},
 		rainfalld: {RNFD}, rainfallh: {RNFH},
 		windspeedavg: {WSAG}, windspeedmax: {WSMX},
-		winddirection: {EDRT}
-	})";
+		winddirection: {WDRT}
+	})");
 
+	JSONTemplate.replace("{TIME}", String(timestamp));
 	JSONTemplate.replace("{PRSR}", String(data.pressure));
 	JSONTemplate.replace("{HMDT}", String(data.humidity));
 	JSONTemplate.replace("{TEMP}", String(data.temperature));
