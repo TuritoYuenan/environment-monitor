@@ -8,6 +8,7 @@
 */
 
 #include <BlockNot.h>
+#include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 
@@ -23,11 +24,11 @@ WeatherData weatherData;
 /// @brief Server for web dashboard
 ESP8266WebServer server(80);
 
-/// @brief Timer for data getting routine
-BlockNot dataTimer(1000);
+/// @brief Timer for database sending routine
+BlockNot sendTimer(5000);
 
 /// @brief Timer for data printing routine
-BlockNot logTimer(3000);
+BlockNot logTimer(1000);
 
 /// @brief Tasks to do once at startup
 void setup()
@@ -48,20 +49,20 @@ void setup()
 /// @brief Tasks to routinely do
 void loop()
 {
-	if (dataTimer.TRIGGERED) {
-		// Get data from weather station. Redo if format is wrong
-		Serial.readBytes(stationData, sizeof(stationData));
-		if (stationData[0] != 'c') { return; }
+	// Get data from weather station. Redo if format is wrong
+	Serial.readBytes(stationData, sizeof(stationData));
+	if (stationData[0] != 'c') { return; }
 
-		// Convert and store weather station data
-		weatherData = storeData(stationData);
-	}
+	// Store weather station data
+	weatherData = storeData(stationData);
+	String JSON = createJSON(weatherData);
 
-	if (logTimer.TRIGGERED) {
-		// Print out data. Might be removed in favor of web server
-		printData(weatherData);
+	// Print out data.
+	// printData(weatherData);
+	Serial.println(JSON);
 
-	}
+	// Send data to Astra DB
+	if (sendTimer.TRIGGERED) { sendData(JSON, DB_ENDPOINT, ASTRA_TOKEN); }
 
 	// Serve webpage if requested
 	server.handleClient();
@@ -143,6 +144,60 @@ void printData(WeatherData data)
 	Serial.printf("Rainfall: (1h) %f mm, (1d) %f mm\n", data.rainfallH, data.rainfallD);
 	Serial.printf("Wind Speed: avg %f m/s, max %f m/s\n", data.windSpeedAvg, data.windSpeedMax);
 	Serial.printf("Wind Direction: %d deg\n", data.windDirection);
+}
+
+/// @brief Send weather station data to an Astra database
+/// @param data Structured weather station data
+/// @param endpoint URL address where the database receives data
+/// @param token Token to authorise to the database
+void sendData(String JSON, const char* endpoint, const char* token)
+{
+	WiFiClientSecure client;
+	HTTPClient https;
+
+	// Create a HTTP request with headers
+	https.begin(client, endpoint);
+	https.addHeader("content-type", "application/json");
+	https.addHeader("x-cassandra-token", token);
+
+	// Send HTTP POST request
+	int responseCode = https.POST(JSON);
+
+	if (responseCode > 0) {
+		Serial.print("Request sent! Code: "); Serial.println(responseCode);
+		String payload = https.getString(); Serial.println(payload);
+	} else {
+		Serial.print("Request failed! Code: "); Serial.println(responseCode);
+	}
+
+	// Free resources
+	https.end();
+}
+
+/// @brief Create a JSON document from weather station data
+/// @param data Structured weather station data
+/// @return A JSON document containing a timestamp field and data fields
+String createJSON(WeatherData data)
+{
+	String JSONTemplate = R"({
+		"date": "2024-02-26T14:14:14.000Z",
+		humidity: {HMDT},
+		pressure: {PRSR},
+		temperature: {TEMP},
+		rainfalld: {RNFD}, rainfallh: {RNFH},
+		windspeedavg: {WSAG}, windspeedmax: {WSMX},
+		winddirection: {EDRT}
+	})";
+
+	JSONTemplate.replace("{PRSR}", String(data.pressure));
+	JSONTemplate.replace("{HMDT}", String(data.humidity));
+	JSONTemplate.replace("{TEMP}", String(data.temperature));
+	JSONTemplate.replace("{RNFH}", String(data.rainfallH));
+	JSONTemplate.replace("{RNFD}", String(data.rainfallD));
+	JSONTemplate.replace("{WSAG}", String(data.windSpeedAvg));
+	JSONTemplate.replace("{WSMX}", String(data.windSpeedMax));
+	JSONTemplate.replace("{WDRT}", String(data.windDirection));
+	return JSONTemplate;
 }
 
 /// @brief Fill weather station data into a HTML file for web server
