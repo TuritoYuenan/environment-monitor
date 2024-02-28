@@ -9,3 +9,4 @@ c_cpp_properties.json
 
 # Avoid uploading secret file
 secrets.h
+certificate.h

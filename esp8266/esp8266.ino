@@ -7,16 +7,22 @@
  * @ref https://pijaeducation.com/serial-print-and-printf-solved
 */
 
+// Library for non-blocking code
 #include <BlockNot.h>
+
+// Libraries for WiFi connection
 #include <WiFiClientSecureBearSSL.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
+
+// Libraries for timestamp
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
+// Internal libraries
 #include "secrets.h"
 #include "wetter-lib.h"
-#include "ssl-certificate.h"
+#include "certificate.h"
 
 /// @brief Raw data received from the weather station
 char stationData[35];
@@ -25,12 +31,15 @@ char stationData[35];
 WeatherData weatherData;
 
 /// @brief Timer for database sending routine
-BlockNot sendTimer(5000);
+BlockNot sendTimer(6000);
 
 /// @brief Timer for data printing routine
-BlockNot logTimer(1000);
+BlockNot logTimer(2000);
 
+/// @brief UDP Protocol for timeClient
 WiFiUDP ntpUDP;
+
+/// @brief NTP time client for setting data timestamp
 NTPClient timeClient(ntpUDP, "asia.pool.ntp.org", UTC_OFFSET);
 
 /// @brief Tasks to do once at startup
@@ -162,6 +171,8 @@ void sendData(String json)
 	HTTPClient https;
 
 	client->setFingerprint(fingerprint_astra_datastax_com);
+	client->setKnownKey(new BearSSL::PublicKey(pubkey_astra_datastax_com));
+	client->connect(astradb_host, astradb_port);
 
 	// Create a HTTP request with headers
 	https.begin(*client, astradb_host, astradb_port);
