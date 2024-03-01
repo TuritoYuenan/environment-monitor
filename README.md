@@ -2,14 +2,18 @@
 
 This is a university IoT project about building a simple, easy to use weather station that provides you with reliable data of your own region, removing the need for other weather services
 
+> [!NOTE]
+> Check out the [web application](https://github.com/TuritoYuenan/zimmer-wetter-webapp) for receiving weather data
+
+> [!NOTE]
 > [Legacy version using ESP32-C3, DHT22 and Blynk](./esp32-c3/)
 
-## Weather data
+## 8 types of Weather data
 
 - Humidity (%)
 - Temperature (ºC)
 - Pressure, barometric (hPa)
-- Rainfall, in 1 hour and 1 day (mm)
+- Rainfall, hourly and daily (mm)
 - Wind speed, average and maximum (m/s)
 - Wind direction (degree)
 
@@ -17,12 +21,11 @@ This is a university IoT project about building a simple, easy to use weather st
 
 - Devices: Arduino Uno, ESP8266
 - Sensor: DFRobot SEN0186 Weather Station
-- Web UI: Pure HTML, CSS & JavaScript
 
 ## Usage
 
-- Prepare and assemble hardware components
-- Using either Arduino IDE or VSCode Arduino, install the board libraries for ESP8266
-- Change the WiFi settings in the [WetterLib.h](./esp8266/WetterLib.h) file to yours
-- Upload Arduino Uno and ESP8266 codes to the respective devices
-- On your browser (connected to the same WiFi), enter the IP address announced in the Serial Monitor to access your web dashboard.
+- Prepare and wire together an Arduino Uno board, an ESP8266 board, and an SEN0186 kit.
+- Using either Arduino IDE or VSCode Arduino, install the board libraries for ESP8266.
+- Create a secret file based on the [template](./esp8266/secrets.template.h). Change the settings to yours
+- Upload [Arduino Uno codes](./arduino-uno/) and [ESP8266 codes](./esp8266/) to the respective devices.
+- Weather data will be uploaded to your Xata database.

@@ -20,6 +20,8 @@
 #include "wetter-lib.h"
 #include "certificate.h"
 
+#define IS_DEBUGGING false
+
 /// @brief Raw data received from the weather station
 char stationData[35];
 
@@ -38,7 +40,7 @@ X509List cert(cert_ISRG_Root_X1);
 void setup()
 {
 	Serial.begin(9600);
-	Serial.setDebugOutput(true);
+	Serial.setDebugOutput(IS_DEBUGGING);
 
 	// Connect to WiFi
 	connectWiFi(WIFI_NAME, WIFI_PASS);
@@ -51,12 +53,12 @@ void setup()
 void loop()
 {
 	// Get data from weather station. Redo if format is wrong
-	// Serial.readBytes(stationData, sizeof(stationData));
-	// if (stationData[0] != 'c') { return; }
+	Serial.readBytes(stationData, sizeof(stationData));
+	if (stationData[0] != 'c') { return; }
 
 	// Store weather station data
-	// weatherData = storeData(stationData);
-	weatherData = generateData();
+	weatherData = storeData(stationData);
+	// weatherData = generateData();
 	String JSON = createJSON(weatherData);
 
 	// Print out data.
@@ -180,14 +182,14 @@ void sendData(String json)
 	std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
 	HTTPClient https;
 
-	client->setFingerprint(fingerprint_astra_datastax_com);
-	client->setKnownKey(new BearSSL::PublicKey(pubkey_astra_datastax_com));
-	client->connect(astradb_host, astradb_port);
+	// Provide certificate and connect to endpoint
+	client->setTrustAnchors(&cert);
+	client->connect(XATA_host, XATA_port);
 
 	// Create a HTTP request with headers
-	https.begin(*client, astradb_host, astradb_port);
-	https.addHeader("content-type", "application/json");
-	https.addHeader("x-cassandra-token", ASTRA_TOKEN);
+	https.begin(*client, XATA_host, XATA_port, DB_ENDPOINT, true);
+	https.addHeader("Content-Type", "application/json");
+	https.addHeader("Authorization", "Bearer " API_KEY);
 
 	// Send request to POST weather data
 	int responseCode = https.POST(json);
@@ -196,8 +198,11 @@ void sendData(String json)
 	if (responseCode > 0) {
 		Serial.print("Request sent! Code: ");
 		Serial.println(responseCode);
+
+		if (IS_DEBUGGING) {
 			String payload = https.getString();
 			Serial.println(payload);
+		}
 	} else {
 		Serial.print("Request failed! Code: ");
 		Serial.println(responseCode);
