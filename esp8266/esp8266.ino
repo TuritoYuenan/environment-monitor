@@ -15,10 +15,6 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 
-// Libraries for timestamp
-#include <NTPClient.h>
-#include <WiFiUdp.h>
-
 // Internal libraries
 #include "secrets.h"
 #include "wetter-lib.h"
@@ -31,16 +27,12 @@ char stationData[35];
 WeatherData weatherData;
 
 /// @brief Timer for database sending routine
-BlockNot sendTimer(6000);
+BlockNot sendTimer(10000);
 
 /// @brief Timer for data printing routine
 BlockNot logTimer(2000);
 
-/// @brief UDP Protocol for timeClient
-WiFiUDP ntpUDP;
-
-/// @brief NTP time client for setting data timestamp
-NTPClient timeClient(ntpUDP, "asia.pool.ntp.org", UTC_OFFSET);
+X509List cert(cert_ISRG_Root_X1);
 
 /// @brief Tasks to do once at startup
 void setup()
@@ -51,15 +43,13 @@ void setup()
 	// Connect to WiFi
 	connectWiFi(WIFI_NAME, WIFI_PASS);
 
-	timeClient.begin();
+	// Do time syncing stuffs
+	handleTime();
 }
 
 /// @brief Tasks to routinely do
 void loop()
 {
-	timeClient.update();
-	unsigned long timestamp = timeClient.getEpochTime();
-
 	// Get data from weather station. Redo if format is wrong
 	// Serial.readBytes(stationData, sizeof(stationData));
 	// if (stationData[0] != 'c') { return; }
@@ -67,7 +57,7 @@ void loop()
 	// Store weather station data
 	// weatherData = storeData(stationData);
 	weatherData = generateData();
-	String JSON = createJSON(weatherData, timestamp);
+	String JSON = createJSON(weatherData);
 
 	// Print out data.
 	if (logTimer.triggered()) {
@@ -98,6 +88,25 @@ void connectWiFi(const char* ssid, const char* password)
 		Serial.print("\nConnected! View your weather at: ");
 		Serial.println(WiFi.localIP());
 	}
+}
+
+/// @brief Sync with with NTP servers to get current time
+void handleTime()
+{
+	configTime(7 * 3600, 0, "asia.pool.ntp.org", "pool.ntp.org", "time.nist.gov");
+
+	Serial.print("Waiting for NTP time sync");
+	time_t now = time(nullptr);
+	while (now < 8 * 3600 * 2) {
+		delay(500);
+		Serial.print(".");
+		now = time(nullptr);
+	}
+	Serial.println("");
+	struct tm timeinfo;
+	gmtime_r(&now, &timeinfo);
+	Serial.print("Current time: ");
+	Serial.print(asctime(&timeinfo));
 }
 
 /// @brief Convert characters to integers
@@ -148,7 +157,8 @@ WeatherData storeData(char* buffer)
 
 /// @brief Randomly generate fake weather data for testing
 /// @return Generated structured weather station data
-WeatherData generateData() {
+WeatherData generateData()
+{
 	WeatherData data;
 
 	data.windDirection = random(360);
@@ -179,14 +189,18 @@ void sendData(String json)
 	https.addHeader("content-type", "application/json");
 	https.addHeader("x-cassandra-token", ASTRA_TOKEN);
 
-	// Send HTTP POST request
+	// Send request to POST weather data
 	int responseCode = https.POST(json);
 
+	// Handle response
 	if (responseCode > 0) {
-		Serial.print("Request sent! Code: "); Serial.println(responseCode);
-		String payload = https.getString(); Serial.println(payload);
+		Serial.print("Request sent! Code: ");
+		Serial.println(responseCode);
+			String payload = https.getString();
+			Serial.println(payload);
 	} else {
-		Serial.print("Request failed! Code: "); Serial.println(responseCode);
+		Serial.print("Request failed! Code: ");
+		Serial.println(responseCode);
 	}
 
 	// Free resources
@@ -195,20 +209,11 @@ void sendData(String json)
 
 /// @brief Create a JSON document from weather station data
 /// @param data Structured weather station data
-/// @return A JSON document containing a timestamp field and data fields
-String createJSON(WeatherData data, unsigned long timestamp)
+/// @return Weather station data formatted in a JSON document
+String createJSON(WeatherData data)
 {
-	String JSONTemplate = F(R"({
-		"date": "{TIME}",
-		humidity: {HMDT},
-		pressure: {PRSR},
-		temperature: {TEMP},
-		rainfalld: {RNFD}, rainfallh: {RNFH},
-		windspeedavg: {WSAG}, windspeedmax: {WSMX},
-		winddirection: {WDRT}
-	})");
+	String JSONTemplate = R"({"humidity": {HMDT}, "pressure": {PRSR}, "temperature": {TEMP}, "rainfall_D": {RNFD}, "rainfall_H": {RNFH}, "windSpeedAvg": {WSAG}, "windSpeedMax": {WSMX}, "windDirection": {WDRT}})";
 
-	JSONTemplate.replace("{TIME}", String(timestamp));
 	JSONTemplate.replace("{PRSR}", String(data.pressure));
 	JSONTemplate.replace("{HMDT}", String(data.humidity));
 	JSONTemplate.replace("{TEMP}", String(data.temperature));
