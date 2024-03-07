@@ -7,6 +7,9 @@
  * @ref https://pijaeducation.com/serial-print-and-printf-solved
 */
 
+// Debug mode
+#define IS_DEBUGGING false
+
 // Library for non-blocking code
 #include <BlockNot.h>
 
@@ -20,8 +23,6 @@
 #include "wetter-lib.h"
 #include "certificate.h"
 
-#define IS_DEBUGGING false
-
 /// @brief Raw data received from the weather station
 char stationData[35];
 
@@ -34,6 +35,7 @@ BlockNot sendTimer(10000);
 /// @brief Timer for data printing routine
 BlockNot logTimer(2000);
 
+/// @brief Certificate for HTTPS requests
 X509List cert(cert_ISRG_Root_X1);
 
 /// @brief Tasks to do once at startup
