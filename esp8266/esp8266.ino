@@ -30,13 +30,19 @@ char stationData[35];
 WeatherData weatherData;
 
 /// @brief Timer for database sending routine
-BlockNot sendTimer(10000);
+BlockNot sendTimer(10, SECONDS);
 
 /// @brief Timer for data printing routine
-BlockNot logTimer(2000);
+BlockNot logTimer(2, SECONDS);
 
 /// @brief Certificate for HTTPS requests
 X509List cert(cert_ISRG_Root_X1);
+
+/// @brief WiFi client with BearSSl security
+std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+
+/// @brief HTTPS client
+HTTPClient https;
 
 /// @brief Tasks to do once at startup
 void setup()
@@ -49,6 +55,9 @@ void setup()
 
 	// Do time syncing stuffs
 	handleTime();
+
+	// Connect to database
+	connectDatabase();
 }
 
 /// @brief Tasks to routinely do
@@ -111,6 +120,12 @@ void handleTime()
 	gmtime_r(&now, &timeinfo);
 	Serial.print("Current time: ");
 	Serial.print(asctime(&timeinfo));
+}
+
+/// @brief Provide certificate and connect to endpoint
+void connectDatabase() {
+	client->setTrustAnchors(&cert);
+	client->connect(XATA_host, XATA_port);
 }
 
 /// @brief Convert characters to integers
@@ -181,13 +196,6 @@ WeatherData generateData()
 /// @param data Structured weather station data
 void sendData(String json)
 {
-	std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
-	HTTPClient https;
-
-	// Provide certificate and connect to endpoint
-	client->setTrustAnchors(&cert);
-	client->connect(XATA_host, XATA_port);
-
 	// Create a HTTP request with headers
 	https.begin(*client, XATA_host, XATA_port, DB_ENDPOINT, true);
 	https.addHeader("Content-Type", "application/json");

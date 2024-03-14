@@ -18,7 +18,8 @@ void loop() {
 		// Receive data from weather station
 		getData(buffer);
 		// Send data to ESP8266 board
-		SerialExport.print(buffer);
+		Serial.write(buffer); Serial.write("\n");
+		SerialExport.write(buffer);
 	}
 }
 
