@@ -57,7 +57,8 @@ void setup()
 	handleTime();
 
 	// Connect to database
-	connectDatabase();
+	client->setTrustAnchors(&cert);
+	client->connect(XATA_host, XATA_port);
 }
 
 /// @brief Tasks to routinely do
@@ -120,12 +121,6 @@ void handleTime()
 	gmtime_r(&now, &timeinfo);
 	Serial.print("Current time: ");
 	Serial.print(asctime(&timeinfo));
-}
-
-/// @brief Provide certificate and connect to endpoint
-void connectDatabase() {
-	client->setTrustAnchors(&cert);
-	client->connect(XATA_host, XATA_port);
 }
 
 /// @brief Convert characters to integers
