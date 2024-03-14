@@ -29,6 +29,9 @@ char stationData[35];
 /// @brief Structured weather station data
 WeatherData weatherData;
 
+/// @brief Weather station data in JSON format
+String weatherJSON;
+
 /// @brief Timer for database sending routine
 BlockNot sendTimer(10, SECONDS);
 
@@ -71,16 +74,16 @@ void loop()
 	// Store weather station data
 	weatherData = storeData(stationData);
 	// weatherData = generateData();
-	String JSON = createJSON(weatherData);
+	weatherJSON = createJSON(weatherData);
 
 	// Print out data.
 	if (logTimer.triggered()) {
-		Serial.println(JSON);
+		Serial.println(weatherJSON);
 	}
 
-	// Send data to Astra DB
+	// Send data to database
 	if (sendTimer.triggered()) {
-		sendData(JSON);
+		sendData(weatherJSON);
 	}
 }
 
