@@ -9,7 +9,7 @@ char buffer[35];
 /// @brief Tasks to do once at startup
 void setup() {
 	Serial.begin(9600);
-	SerialExport.begin(9600);
+		SerialExport.begin(9600);
 }
 
 /// @brief Tasks to routinely do
@@ -20,6 +20,9 @@ void loop() {
 		// Send data to ESP8266 board
 		Serial.write(buffer); Serial.write("\n");
 		SerialExport.write(buffer);
+	} else {
+		Serial.println("Nothing to read from sensor");
+		delay(1000);
 	}
 }
 
