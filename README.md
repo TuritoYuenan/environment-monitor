@@ -1,6 +1,7 @@
 # Swinburne Weather Service (ZimmerWetter)
 
-> [!info] Also check out source code for the [web application](https://github.com/TuritoYuenan/zimmer-wetter-webapp)
+> [!NOTE]
+> The [web application](https://github.com/TuritoYuenan/zimmer-wetter-webapp) is separated to its own repository.
 
 ## What is this about?
 
@@ -19,7 +20,7 @@ In short, this is an IoT Weather Station project.
 
 ## What technologies are used? / Tech stack
 
-[![Technologies used in ZimmerWetter](https://github-readme-tech-stack.vercel.app/api/cards?title=Technologies+used+in+ZimmerWetter&borderRadius=0&lineHeight=5&lineCount=1&width=800&hideTitle=true&line1=html5%2CHTML%2CE34F26%3Bcss3%2CCSS%2C1572b6%3Btypescript%2CTypeScript%2C3178c6%3Bcplusplus%2CC%2B%2B%2C00599c%3Bsvelte%2CSvelteKit%2Cff5800%3Bpostgresql%2CXata%2C9f00ff%3Barduino%2CArduino%2C006dff%3Bespressif%2CESP8266%2CE7352C%3B)
+![Technologies used in ZimmerWetter](https://github-readme-tech-stack.vercel.app/api/cards?title=Technologies+used+in+ZimmerWetter&borderRadius=0&lineHeight=5&lineCount=1&width=800&hideTitle=true&line1=html5%2CHTML%2CE34F26%3Bcss3%2CCSS%2C1572b6%3Btypescript%2CTypeScript%2C3178c6%3Bcplusplus%2CC%2B%2B%2C00599c%3Bsvelte%2CSvelteKit%2Cff5800%3Bpostgresql%2CXata%2C9f00ff%3Barduino%2CArduino%2C006dff%3Bespressif%2CESP8266%2CE7352C%3B)
 
 ## Credits
 
