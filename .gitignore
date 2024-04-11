@@ -10,3 +10,19 @@ c_cpp_properties.json
 # Avoid uploading secret file
 secrets.h
 certificate.h
+
+# Imported from SvelteKit webapp
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+src/xata.ts
+.xatarc
+.xata

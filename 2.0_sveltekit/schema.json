@@ -1,0 +1,41 @@
+{
+	"tables": [
+		{
+			"name": "weather_data",
+			"columns": [
+				{
+					"name": "humidity",
+					"type": "int"
+				},
+				{
+					"name": "windDirection",
+					"type": "int"
+				},
+				{
+					"name": "temperature",
+					"type": "float"
+				},
+				{
+					"name": "pressure",
+					"type": "float"
+				},
+				{
+					"name": "windSpeedAvg",
+					"type": "float"
+				},
+				{
+					"name": "windSpeedMax",
+					"type": "float"
+				},
+				{
+					"name": "rainfall_H",
+					"type": "float"
+				},
+				{
+					"name": "rainfall_D",
+					"type": "float"
+				}
+			]
+		}
+	]
+}
