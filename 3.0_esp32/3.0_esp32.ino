@@ -1,9 +1,8 @@
 /**
- * @file Minh Triet's Weather Station - Code for ESP8266 module
- * @version 2.0
+ * @file Minh Triet's Weather Station - Code for ESP32 module
+ * @version 2.9.0
  * @author Nguyen Ta Minh Triet <turitoyuenan@proton.me>
  * @ref https://wiki.dfrobot.com/APRS_Weather_Station_Sensor_Kit_SEN0186
- * @ref https://lastminuteengineers.com/bme280-esp8266-weather-station
  * @ref https://pijaeducation.com/serial-print-and-printf-solved
 */
 
@@ -21,9 +20,9 @@
 #include <WiFiUdp.h>
 
 // Libraries for WiFi connection
-#include <WiFiClientSecureBearSSL.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
+#include <WiFi.h>
 
 // Internal libraries
 #include "secrets.h"
@@ -52,10 +51,10 @@ BlockNot sendTimer(10, SECONDS);
 BlockNot logTimer(2, SECONDS);
 
 /// @brief Certificate for HTTPS requests
-X509List cert(cert_ISRG_Root_X1);
+// X509List cert(cert_ISRG_Root_X1);
 
 /// @brief WiFi client with BearSSl security
-std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+WiFiClientSecure client;
 
 /// @brief HTTPS client
 HTTPClient https;
@@ -76,8 +75,8 @@ void setup()
 	handleTime();
 
 	// Connect to database
-	client->setTrustAnchors(&cert);
-	client->connect(XATA_host, XATA_port);
+	client.setCACert(cert_ISRG_Root_X1);
+	client.connect(XATA_host, XATA_port);
 }
 
 /// @brief Tasks to routinely do
@@ -214,7 +213,7 @@ WeatherData generateData()
 void sendData(String json)
 {
 	// Create a HTTP request with headers
-	https.begin(*client, XATA_host, XATA_port, DB_ENDPOINT, true);
+	https.begin(client, XATA_host, XATA_port, DB_ENDPOINT, true);
 	https.addHeader("Content-Type", "application/json");
 	https.addHeader("Authorization", "Bearer " API_KEY);
 
@@ -295,10 +294,9 @@ String createTimeStamp()
 //send data to MongoDB
 void sendtoMongoDB(String payload)
 {
-
 	const String api_key = "q3gi4QrRKcFaL0QZ7ZlXzRw4arkRCQrAQnAfMHHx6BCMIFq5V8u4BTVpCrPPEfaE";
 	const char* serverName = "https://ap-southeast-1.aws.data.mongodb-api.com/app/data-eaisp/endpoint/data/v1/action/insertOne";
-	https.begin(*client, serverName);
+	https.begin(client, serverName);
 	https.addHeader("Content-Type", "application/json");
 	https.addHeader("api-key", api_key);
 	Serial.println(payload);
