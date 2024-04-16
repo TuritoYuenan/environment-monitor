@@ -26,3 +26,6 @@ vite.config.ts.timestamp-*
 src/xata.ts
 .xatarc
 .xata
+
+# Influx config, including token
+influx.ini
