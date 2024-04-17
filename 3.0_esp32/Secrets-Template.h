@@ -1,7 +1,7 @@
-/// @brief Astra database endpoint
+/// @brief Database endpoint
 #define DB_ENDPOINT "/watch?v=dQw4w9WgXcQ"
 
-/// @brief Xata API key
+/// @brief Database API key
 #define API_KEY "<enter API Key here>"
 
 /// @brief WiFi name (SSID)
