@@ -8,8 +8,8 @@ docs/
 c_cpp_properties.json
 
 # Avoid uploading secret file
-secrets.h
-certificate.h
+Secrets.h
+Certificate.h
 
 # Imported from SvelteKit webapp
 .DS_Store

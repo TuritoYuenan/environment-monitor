@@ -26,9 +26,9 @@
 #include <ESP8266WiFi.h>
 
 // Internal libraries
-#include "secrets.h"
-#include "wetter-lib.h"
-#include "certificate.h"
+#include "Secrets.h"
+#include "WeatherData.h"
+#include "Certificate.h"
 
 /// @brief create NTP client for sync the current time
 WiFiUDP ntpUDP;
