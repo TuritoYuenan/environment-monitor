@@ -10,7 +10,7 @@ mysql_password = "pi"
 mysql_database = "weather_station"
 
 # MongoDB credentials
-mongodb_host = "mongodb+srv://admin:HEX7Kx9mwHMYsh3F@zimmerweather.t8rusfg.mongodb.net/?retryWrites=true&w=majority"
+mongodb_host = "mongodb_host"
 mongodb_dbname = "WeatherStation"
 
 # MySQL connection
