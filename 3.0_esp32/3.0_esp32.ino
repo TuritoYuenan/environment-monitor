@@ -9,20 +9,14 @@
 // Debug mode
 #define IS_DEBUGGING false
 
-// Library for non-blocking code
-#include <BlockNot.h>
-
-//Library for Json data fomat
-#include <ArduinoJson.h>
-
-//Library for Time NTP to get cur timeStamp
-#include <NTPClient.h>
-#include <WiFiUdp.h>
-
-// Libraries for WiFi connection
+// WiFi connection
 #include <WiFiClientSecure.h>
-#include <HTTPClient.h>
-#include <WiFi.h>
+
+// MQTT client
+#include <PubSubClient.h>
+
+// Non-blocking code
+#include <BlockNot.h>
 
 // Internal libraries
 #include "Secrets.h"
@@ -35,9 +29,6 @@ char stationData[35];
 /// @brief Structured weather station data
 WeatherData data;
 
-/// @brief Weather station data in JSON format
-String weatherJSON;
-
 /// @brief Timer for database sending routine
 BlockNot sendTimer(10, SECONDS);
 
@@ -45,10 +36,10 @@ BlockNot sendTimer(10, SECONDS);
 BlockNot logTimer(2, SECONDS);
 
 /// @brief Secure WiFi client
-WiFiClientSecure client;
+WiFiClientSecure wifi;
 
-/// @brief HTTPS client
-HTTPClient https;
+/// @brief MQTT pub/sub client
+PubSubClient client(wifi);
 
 /// @brief Tasks to do once at startup
 void setup()
@@ -59,11 +50,15 @@ void setup()
 	// Connect to WiFi
 	connectWiFi(WIFI_NAME, WIFI_PASS);
 
+	// Setup MQTT client
+	client.setServer(MQTT_BROKER, 1883);
+	client.setCallback(mqttCallback);
+
 	// Do time syncing stuffs
 	handleTime();
 
-	// Connect to database
-	client.setCACert(cert_ISRG_Root_X1);
+	// Set root certificate
+	wifi.setCACert(cert_ISRG_Root_X1);
 }
 
 /// @brief Tasks to routinely do
@@ -75,7 +70,7 @@ void loop()
 
 	// Store weather station data
 	data = WeatherData(stationData); // data = WeatherData();
-	weatherJSON = data.toJSON();
+	String weatherJSON = data.toJSON();
 
 	// Print out data.
 	if (logTimer.triggered()) {
@@ -85,6 +80,23 @@ void loop()
 	// Send data to database
 	if (sendTimer.triggered()) {
 		// Send data to database
+	}
+}
+
+/// @brief Callback function when received an MQTT message
+/// @param topic MQTT Topic where message is received
+/// @param message Message content
+/// @param length Message length
+void mqttCallback(char* topic, uint8_t* message, unsigned int length)
+{
+	Serial.print("Message arrived on topic: ");
+	Serial.print(topic);
+	Serial.print(". Message: ");
+	String messageTemp;
+
+	for (int i = 0; i < length; i++) {
+		Serial.print((char)message[i]);
+		messageTemp += (char)message[i];
 	}
 }
 
