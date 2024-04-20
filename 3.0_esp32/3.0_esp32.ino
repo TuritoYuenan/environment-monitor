@@ -9,6 +9,10 @@
 // Debug mode
 #define IS_DEBUGGING false
 
+// Buzzer pin
+#define BUZZER D17
+
+// MARK: Libraries
 // WiFi connection
 #include <WiFiClientSecure.h>
 
@@ -21,8 +25,9 @@
 // Internal libraries
 #include "Secrets.h"
 #include "WeatherData.h"
-#include "Certificate.h"
+// #include "Certificate.h"
 
+// MARK: Globals
 /// @brief Raw data received from the weather station
 char stationData[35];
 
@@ -42,7 +47,7 @@ WiFiClientSecure wifi;
 PubSubClient client(wifi);
 
 /// @brief Tasks to do once at startup
-void setup()
+void setup() // MARK: Setup
 {
 	Serial.begin(9600);
 	Serial.setDebugOutput(IS_DEBUGGING);
@@ -58,18 +63,19 @@ void setup()
 	handleTime();
 
 	// Set root certificate
-	wifi.setCACert(cert_ISRG_Root_X1);
+	// wifi.setCACert(cert_ISRG_Root_X1);
 }
 
 /// @brief Tasks to routinely do
-void loop()
+void loop() // MARK: Loop
 {
 	// Get data from weather station. Redo if format is wrong
-	Serial.readBytes(stationData, sizeof(stationData));
-	if (stationData[0] != 'c') { return; }
+	// Serial.readBytes(stationData, sizeof(stationData));
+	// if (stationData[0] != 'c') { return; }
+	getData(stationData);
 
 	// Store weather station data
-	data = WeatherData(stationData); // data = WeatherData();
+	data = WeatherData(stationData);
 	String weatherJSON = data.toJSON();
 
 	// Print out data.
@@ -87,7 +93,7 @@ void loop()
 /// @param topic MQTT Topic where message is received
 /// @param message Message content
 /// @param length Message length
-void mqttCallback(char* topic, uint8_t* message, unsigned int length)
+void mqttCallback(char* topic, uint8_t* message, unsigned int length) // MARK: Callback
 {
 	Serial.print("Message arrived on topic: ");
 	Serial.print(topic);
@@ -103,7 +109,7 @@ void mqttCallback(char* topic, uint8_t* message, unsigned int length)
 /// @brief Connect to WiFi
 /// @param ssid WiFi name / SSID
 /// @param password WiFi password
-void connectWiFi(const char* ssid, const char* password)
+void connectWiFi(const char* ssid, const char* password) // MARK: WiFi
 {
 	Serial.printf("\nWiFi is %s. Connecting.", ssid);
 	WiFi.hostname(F("ZimmerWetter"));
@@ -121,7 +127,7 @@ void connectWiFi(const char* ssid, const char* password)
 }
 
 /// @brief Sync with with NTP servers to get current time
-void handleTime()
+void handleTime() // MARK: NTP Time
 {
 	configTime(7 * 3600, 0, "asia.pool.ntp.org", "pool.ntp.org", "time.nist.gov");
 
@@ -137,4 +143,18 @@ void handleTime()
 	gmtime_r(&now, &timeinfo);
 	Serial.print("Current time: ");
 	Serial.print(asctime(&timeinfo));
+}
+
+/// @brief Get raw weather station data
+/// @param buffer Variable to save data into
+void getData(char* buffer) // MARK: Get Data
+{
+	for (int i = 0; i < 35; i++) {
+		if (Serial.available()) {
+			buffer[i] = Serial.read();
+		} else {
+			i--;
+		}
+		if (buffer[0] != 'c') { i = -1; }
+	}
 }

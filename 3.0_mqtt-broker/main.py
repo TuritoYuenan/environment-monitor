@@ -5,8 +5,8 @@ from influxdb_client.rest import ApiException
 from paho.mqtt.client import Client, MQTTMessage
 from paho.mqtt.enums import CallbackAPIVersion
 
+# MARK: Constants
 DEBUG_MODE = True
-
 CLIENT_ID = 'Swinberry MQTT Broker'
 BROKER_HOST = '127.0.0.1'
 BROKER_PORT = 1883
@@ -14,7 +14,7 @@ USERNAME = 'swinuser'
 PASSWORD = 'swinpass'
 
 
-
+# MARK: Connection callback
 def on_connect(client: Client, userdata, flags, reason_code, properties):
 	"""Routine to do when connected to the MQTT broker
 
@@ -31,7 +31,7 @@ def on_connect(client: Client, userdata, flags, reason_code, properties):
 	print('Subscribed to MQTT topic')
 
 
-
+# MARK: Message callback
 def on_message(client: Client, userdata: InfluxDBClient, message: MQTTMessage):
 	"""Routine to do when received an MQTT message
 
@@ -68,7 +68,7 @@ def on_message(client: Client, userdata: InfluxDBClient, message: MQTTMessage):
 		print('Something wrong happened')
 
 
-
+# MARK: Main procedure
 def main():
 	"""Main procedure
 	"""
@@ -84,4 +84,7 @@ def main():
 	mqtt_client.connect(BROKER_HOST, BROKER_PORT)
 	mqtt_client.loop_forever()
 
-main()
+	return 0
+
+# MARK: Main execution
+if __name__ == '__main__': main()
