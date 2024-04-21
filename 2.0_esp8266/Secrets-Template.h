@@ -1,11 +1,11 @@
 /// @brief Astra database endpoint
-#define DB_ENDPOINT "/watch?v=dQw4w9WgXcQ"
+#define DB_ENDPOINT ""
 
 /// @brief Xata API key
-#define API_KEY "<enter API Key here>"
+#define API_KEY ""
 
 /// @brief WiFi name (SSID)
-#define WIFI_NAME "Airport WiFi!! (Totally not Suspicious!!)"
+#define WIFI_NAME ""
 
 /// @brief WiFi password
-#define WIFI_PASS "joemama"
+#define WIFI_PASS ""
