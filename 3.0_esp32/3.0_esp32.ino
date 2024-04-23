@@ -9,9 +9,6 @@
 // Debug mode
 #define IS_DEBUGGING false
 
-// Buzzer pin
-#define BUZZER D17
-
 // MARK: Libraries
 // WiFi connection
 #include <WiFiClientSecure.h>
@@ -25,7 +22,6 @@
 // Internal libraries
 #include "Secrets.h"
 #include "WeatherData.h"
-// #include "Certificate.h"
 
 // MARK: Globals
 /// @brief Raw data received from the weather station
@@ -34,8 +30,8 @@ char stationData[35];
 /// @brief Structured weather station data
 WeatherData data;
 
-/// @brief Secure WiFi client
-WiFiClientSecure wifi;
+/// @brief WiFi client
+WiFiClient wifi;
 
 /// @brief MQTT pub/sub client
 PubSubClient client(wifi);
@@ -49,6 +45,7 @@ BlockNot logTimer(2, SECONDS);
 /// @brief Tasks to do once at startup
 void setup() // MARK: Setup
 {
+	// Start Serial communication
 	Serial.begin(9600);
 	Serial.setDebugOutput(IS_DEBUGGING);
 
@@ -56,19 +53,20 @@ void setup() // MARK: Setup
 	connectWiFi(WIFI_NAME, WIFI_PASS);
 
 	// Setup MQTT client
-	client.setServer(MQTT_BROKER, 1883);
+	client.setServer(IPAddress(MQTT_BROKER), 1883);
 	client.setCallback(mqttCallback);
 
 	// Do time syncing stuffs
 	handleTime();
-
-	// Set root certificate
-	// wifi.setCACert(cert_ISRG_Root_X1);
 }
 
 /// @brief Tasks to routinely do
 void loop() // MARK: Loop
 {
+	if (!client.connected()) {
+		connectBroker();
+	}
+
 	// Get data from weather station. Redo if format is wrong
 	getData(stationData);
 
@@ -83,7 +81,7 @@ void loop() // MARK: Loop
 
 	// Send data to database
 	if (sendTimer.triggered()) {
-		// Send data to database
+		client.publish(MQTT_TOPIC, weatherJSON.c_str());
 	}
 }
 
@@ -124,6 +122,23 @@ void connectWiFi(const char* ssid, const char* password) // MARK: WiFi
 	}
 }
 
+/// @brief Connect to MQTT Broker
+void connectBroker() // MARK: MQTT Broker
+{
+	while (!client.connected()) {
+		Serial.println("Connecting to MQTT...");
+
+		if (client.connect("ESP32Client")) {
+			Serial.println("Connected to MQTT");
+		} else {
+			Serial.print("Failed, rc=");
+			Serial.print(client.state());
+			Serial.println(" Retrying in 5 seconds...");
+			delay(5000);
+		}
+	}
+}
+
 /// @brief Sync with with NTP servers to get current time
 void handleTime() // MARK: NTP Time
 {
@@ -141,18 +156,4 @@ void handleTime() // MARK: NTP Time
 	gmtime_r(&now, &timeinfo);
 	Serial.print("Current time: ");
 	Serial.print(asctime(&timeinfo));
-}
-
-/// @brief Get raw weather station data
-/// @param buffer Variable to save data into
-void getData(char* buffer) // MARK: Get Data
-{
-	for (int i = 0; i < 35; i++) {
-		if (Serial.available()) {
-			buffer[i] = Serial.read();
-		} else {
-			i--;
-		}
-		if (buffer[0] != 'c') { i = -1; }
-	}
 }

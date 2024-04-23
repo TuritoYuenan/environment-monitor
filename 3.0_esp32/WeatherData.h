@@ -1,3 +1,20 @@
+#ifndef WEATHER_DATA
+#define WEATHER_DATA
+
+/// @brief Get raw weather station data
+/// @param buffer Variable to save data into
+void getData(char* buffer) // MARK: Get Data
+{
+	for (int i = 0; i < 35; i++) {
+		if (Serial.available()) {
+			buffer[i] = Serial.read();
+		} else {
+			i--;
+		}
+		if (buffer[0] != 'c') { i = -1; }
+	}
+}
+
 /// @brief Convert characters to integers
 /// @param buffer Raw weather station data
 /// @param start First character to include
@@ -80,3 +97,5 @@ struct WeatherData {
 		return JSONTemplate;
 	}
 };
+
+#endif // MARK: WEATHER_DATA
