@@ -28,4 +28,5 @@ src/xata.ts
 .xata
 
 # Influx config, including token
-influx.ini
+local.ini
+cloud.ini
