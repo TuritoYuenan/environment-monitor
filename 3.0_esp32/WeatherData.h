@@ -45,7 +45,7 @@ int charToInt(char* buffer, int start, int stop)
 /// @brief Data received from the SEN0186 Weather Station Kit
 struct WeatherData {
 	uint8_t humidity; ///< @brief Humidity (%)
-	uint16_t pressure; ///< @brief Pressure (Pa)
+	uint32_t pressure; ///< @brief Pressure (Pa)
 	uint16_t windDirection; ///< @brief Wind Direction (deg)
 	float windSpeedAvg; ///< @brief Average Wind Speed (m/s)
 	float windSpeedMax; ///< @brief Maximum Wind Speed (m/s)

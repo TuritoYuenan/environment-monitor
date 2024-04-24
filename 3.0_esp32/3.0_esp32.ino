@@ -36,11 +36,8 @@ WiFiClient wifi;
 /// @brief MQTT pub/sub client
 PubSubClient client(wifi);
 
-/// @brief Timer for database sending routine
-BlockNot sendTimer(10, SECONDS);
-
-/// @brief Timer for data printing routine
-BlockNot logTimer(2, SECONDS);
+/// @brief Timer to log data
+BlockNot logTimer(5, SECONDS);
 
 /// @brief Tasks to do once at startup
 void setup() // MARK: Setup
@@ -74,13 +71,9 @@ void loop() // MARK: Loop
 	data = WeatherData(stationData);
 	String weatherJSON = data.toJSON();
 
-	// Print out data.
+	// Log data
 	if (logTimer.triggered()) {
 		Serial.println(weatherJSON);
-	}
-
-	// Send data to database
-	if (sendTimer.triggered()) {
 		client.publish(MQTT_TOPIC, weatherJSON.c_str());
 	}
 }
@@ -108,7 +101,7 @@ void mqttCallback(char* topic, uint8_t* message, unsigned int length) // MARK: C
 void connectWiFi(const char* ssid, const char* password) // MARK: WiFi
 {
 	Serial.printf("\nWiFi is %s. Connecting.", ssid);
-	WiFi.hostname(F("ZimmerWetter"));
+	WiFi.hostname("ZimmerWetter");
 	WiFi.begin(ssid, password);
 
 	while (WiFi.status() != WL_CONNECTED) {
@@ -117,12 +110,13 @@ void connectWiFi(const char* ssid, const char* password) // MARK: WiFi
 	}
 
 	if (WiFi.status() == WL_CONNECTED) {
-		Serial.print("\nConnected! View your weather at: ");
+		Serial.print("\nConnected to WiFi as: ");
 		Serial.println(WiFi.localIP());
 	}
 }
 
 /// @brief Connect to MQTT Broker
+/// @author Kallen Houston
 void connectBroker() // MARK: MQTT Broker
 {
 	while (!client.connected()) {
