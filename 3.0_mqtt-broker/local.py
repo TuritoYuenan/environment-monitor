@@ -6,7 +6,7 @@ from paho.mqtt.client import Client, MQTTMessage
 from paho.mqtt.enums import CallbackAPIVersion
 
 # MARK: Constants
-DEBUG_MODE = True
+DEBUG_MODE = False
 CLIENT_ID = 'Swinberry MQTT Broker'
 BROKER_HOST = '127.0.0.1'
 BROKER_PORT = 1883
@@ -72,7 +72,7 @@ def on_message(client: Client, userdata: InfluxDBClient, message: MQTTMessage):
 def main():
 	"""Main procedure
 	"""
-	write_client = InfluxDBClient.from_config_file('influx.ini', DEBUG_MODE, True)
+	write_client = InfluxDBClient.from_config_file('local.ini', DEBUG_MODE, True)
 
 	mqtt_client = Client(CallbackAPIVersion.VERSION2, CLIENT_ID)
 	mqtt_client.username_pw_set(USERNAME, PASSWORD)
