@@ -1,3 +1,0 @@
-influxdb-client
-pymongo
-paho-mqtt
