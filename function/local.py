@@ -5,6 +5,7 @@ from influxdb_client.rest import ApiException
 from paho.mqtt.client import Client, MQTTMessage
 from paho.mqtt.enums import CallbackAPIVersion
 
+
 # MARK: Constants
 DEBUG_MODE = False
 CLIENT_ID = 'Swinberry MQTT Broker'
@@ -72,7 +73,7 @@ def on_message(client: Client, userdata: InfluxDBClient, message: MQTTMessage):
 def main():
 	"""Main procedure
 	"""
-	write_client = InfluxDBClient.from_config_file('local.ini', DEBUG_MODE, True)
+	write_client = InfluxDBClient.from_env_properties()
 
 	mqtt_client = Client(CallbackAPIVersion.VERSION2, CLIENT_ID)
 	mqtt_client.username_pw_set(USERNAME, PASSWORD)
@@ -85,6 +86,7 @@ def main():
 	mqtt_client.loop_forever()
 
 	return 0
+
 
 # MARK: Main execution
 if __name__ == '__main__': main()

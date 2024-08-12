@@ -1,13 +1,10 @@
-![Project Banner](.github/Swinburne%20Weather%20Service.png)
+![Project Banner](.github/Banner.png)
 
-# Swinburne Weather Service (ZimmerWetter)
+# Swinburne Weather Service (codename: ZimmerWetter)
 
 This is a university project aiming towards studying, researching and applying Internet-of-Things technology through developing and deploying a weather station system at the campus of Swinburne University of Technology in Ho Chi Minh city, Vietnam.
 
 In short, an IoT Weather Station project.
-
-> [!NOTE]
-> The [web application](https://github.com/TuritoYuenan/zimmer-wetter-webapp) is separated to its own repository.
 
 ## What does it measure?
 
@@ -21,6 +18,8 @@ In short, an IoT Weather Station project.
 ## What technologies are used? / Tech stack
 
 ![Technologies used in ZimmerWetter](https://github-readme-tech-stack.vercel.app/api/cards?title=Technologies+used+in+ZimmerWetter&borderRadius=0&lineHeight=5&lineCount=1&width=800&hideTitle=true&line1=html5%2CHTML%2CE34F26%3Bcss3%2CCSS%2C1572b6%3Btypescript%2CTypeScript%2C3178c6%3Bcplusplus%2CC%2B%2B%2C00599c%3Bsvelte%2CSvelteKit%2Cff5800%3Bpostgresql%2CXata%2C9f00ff%3Barduino%2CArduino%2C006dff%3Bespressif%2CESP8266%2CE7352C%3B)
+
+![Architecture Diagram](.github/Diagram.png)
 
 ## Who is involved? / Credits
 

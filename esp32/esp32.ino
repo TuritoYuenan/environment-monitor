@@ -20,8 +20,8 @@
 #include <BlockNot.h>
 
 // Internal libraries
-#include "Secrets.h"
-#include "WeatherData.h"
+#include "secrets.h"
+#include "weather_data.h"
 
 // MARK: Globals
 /// @brief Raw data received from the weather station
@@ -66,6 +66,7 @@ void loop() // MARK: Loop
 
 	// Get data from weather station. Redo if format is wrong
 	getData(stationData);
+	if (stationData[0] != 'c') { return; }
 
 	// Store weather station data
 	data = WeatherData(stationData);
@@ -73,6 +74,8 @@ void loop() // MARK: Loop
 
 	// Log data
 	if (logTimer.triggered()) {
+		if (IS_DEBUGGING) { Serial.println(stationData); }
+
 		Serial.println(weatherJSON);
 		client.publish(MQTT_TOPIC, weatherJSON.c_str());
 	}
