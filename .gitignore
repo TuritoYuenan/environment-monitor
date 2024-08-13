@@ -1,32 +1,18 @@
 # Arduino build directories
 build/
 
-# Doxygen documentations should be compiled per-user
+# Doxygen documentations should be compiled locally
 docs/
 
 # C/C++ IntelliSense configs are local only
 c_cpp_properties.json
 
 # Avoid uploading secret file
-Secrets.h
-Certificate.h
+compose.override.yml
+influx-configs
+secrets.h
+pwfile
 
-# Imported from SvelteKit webapp
-.DS_Store
-node_modules
-/build
-/.svelte-kit
-/package
-.env
-.env.*
-!.env.example
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
-
-src/xata.ts
-.xatarc
-.xata
-
-# Influx config, including token
-local.ini
-cloud.ini
+# Service data and logs
+data/
+log/

@@ -1,0 +1,57 @@
+# https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#run-grafana-via-docker-compose
+# https://docs.influxdata.com/influxdb/v2/install/use-docker-compose
+# https://pimylifeup.com/mosquitto-mqtt-docker
+
+name: ZimmerWetter
+
+services:
+  # ##################### #
+  # Mosquitto MQTT Broker #
+  # ##################### #
+  broker:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: on-failure:5
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes:
+      - ./mosquitto:/mosquitto
+    stdin_open: true
+    tty: true
+
+  # ############################# #
+  # InfluxDB Time-Series Database #
+  # ############################# #
+  database:
+    image: influxdb:alpine
+    container_name: influxdb
+    restart: on-failure:5
+    ports:
+      - 8086:8086
+    volumes:
+      - ./influxdb/config:/etc/influxdb2
+      - ./influxdb/data:/var/lib/influxdb2
+
+  # ############################# #
+  #  Data Batch-Insert Function   #
+  # ############################# #
+  function:
+    build: ./function
+    container_name: function
+    restart: on-failure:5
+    depends_on:
+      - database
+      - broker
+
+  # ############################# #
+  # Grafana Analytics Application #
+  # ############################# #
+  analytics:
+    image: grafana/grafana
+    container_name: grafana
+    restart: on-failure:5
+    ports:
+      - '3000:3000'
+    depends_on:
+      - database

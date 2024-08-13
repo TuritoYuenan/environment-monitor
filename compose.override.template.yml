@@ -1,0 +1,39 @@
+#
+# Secret file: Contains configurations, passwords, and other sensitive data
+#
+
+name: ZimmerWetter
+
+services:
+  # InfluxDB Configuration
+  # 1. Set your organisation name and admin token
+  # 2. Set your username and password
+  # 3. Set your initial bucket's name and retention rate
+  database:
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_ORG: <<enter your organisation name>>
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: <<enter your admin token>>
+      DOCKER_INFLUXDB_INIT_USERNAME: <<enter your username>>
+      DOCKER_INFLUXDB_INIT_PASSWORD: <<enter your password>>
+      DOCKER_INFLUXDB_INIT_BUCKET: enter_your_bucket_name
+      DOCKER_INFLUXDB_INIT_RETENTION: 1w
+
+  # Batch-Insert Function Configuration
+  # 1. Copy your InfluxDB organisation name and admin token
+  # 2. Set your InfluxDB timeout
+  # 3. Optionally set other configurations
+  function:
+    environment:
+      INFLUXDB_V2_URL: http://localhost:8086
+      INFLUXDB_V2_ORG: <<enter your organisation name>>
+      INFLUXDB_V2_TOKEN: <<enter your admin token>>
+      INFLUXDB_V2_TIMEOUT: 6000
+      INFLUXDB_V2_VERIFY_SSL: false
+      INFLUXDB_V2_SSL_CA_CERT:
+      INFLUXDB_V2_CERT_FILE:
+      INFLUXDB_V2_CERT_KEY_FILE:
+      INFLUXDB_V2_CERT_KEY_PASSWORD:
+      INFLUXDB_V2_CONNECTION_POOL_MAXSIZE:
+      INFLUXDB_V2_AUTH_BASIC:
+      INFLUXDB_V2_PROFILER:

@@ -1,0 +1,4 @@
+.vscode/
+.dockerignore
+Dockerfile
+README.md
