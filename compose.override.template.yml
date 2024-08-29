@@ -25,7 +25,7 @@ services:
   # 3. Optionally set other configurations
   function:
     environment:
-      INFLUXDB_V2_URL: http://localhost:8086
+      INFLUXDB_V2_URL: http://database:8086
       INFLUXDB_V2_ORG: <<enter your organisation name>>
       INFLUXDB_V2_TOKEN: <<enter your admin token>>
       INFLUXDB_V2_TIMEOUT: 6000
@@ -37,3 +37,10 @@ services:
       INFLUXDB_V2_CONNECTION_POOL_MAXSIZE:
       INFLUXDB_V2_AUTH_BASIC:
       INFLUXDB_V2_PROFILER:
+
+  # Chronograf Configuration
+  analytics:
+    environment:
+      INFLUXDB_URL: http://influxdb:8086
+      INFLUXDB_USERNAME: <<enter your username>>
+      INFLUXDB_PASSWORD: <<enter your password>>
