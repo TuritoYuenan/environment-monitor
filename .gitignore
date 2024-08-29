@@ -14,5 +14,6 @@ secrets.h
 pwfile
 
 # Service data and logs
+chronograf/
 data/
 log/
