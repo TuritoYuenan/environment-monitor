@@ -8,11 +8,12 @@ from paho.mqtt.enums import CallbackAPIVersion
 
 # MARK: Constants
 DEBUG_MODE = True
-CLIENT_ID = 'Swinberry MQTT Broker'
+CLIENT_ID = 'Weather Data Edge Function'
 BROKER_HOST = 'broker' # name of Mosquitto service in compose.yml
 BROKER_PORT = 1883
 USERNAME = 'swinuser'
 PASSWORD = 'swinpass'
+TOPIC = 'swinburne/hcmc_a35'
 
 
 # MARK: Connection callback
@@ -28,8 +29,8 @@ def on_connect(client: Client, userdata, flags, reason_code, properties):
 	"""
 	print('Connected to broker')
 
-	client.subscribe('swinburne/hcmc_a35')
-	print('Subscribed to MQTT topic')
+	client.subscribe(TOPIC)
+	print(f'Subscribed to {TOPIC} topic')
 
 
 # MARK: Message callback
@@ -53,11 +54,11 @@ def on_message(client: Client, userdata: InfluxDBClient, message: MQTTMessage):
 		.field('humidity', extract['humidity'])
 		.field('pressure', extract['pressure'])
 		.field('temperature', extract['temperature'])
-		.field('rainfall_1day', extract['rainfall_D'])
-		.field('rainfall_1hour', extract['rainfall_H'])
-		.field('windspeed_avg', extract['windSpeedAvg'])
-		.field('windspeed_max', extract['windSpeedMax'])
-		.field('winddirection', extract['windDirection'])
+		.field('rainfall_day', extract['rainfall_day'])
+		.field('rainfall_hour', extract['rainfall_hour'])
+		.field('wind_speed_avg', extract['wind_speed_avg'])
+		.field('wind_speed_max', extract['wind_speed_max'])
+		.field('wind_direction', extract['wind_direction'])
 	)
 
 	try:
@@ -75,14 +76,19 @@ def main():
 	"""
 	write_client = InfluxDBClient.from_env_properties()
 
+	print("Entering credentials")
 	mqtt_client = Client(CallbackAPIVersion.VERSION2, CLIENT_ID)
 	mqtt_client.username_pw_set(USERNAME, PASSWORD)
 	mqtt_client.user_data_set(write_client)
 
+	print("Setting up callback functionality")
 	mqtt_client.on_connect = on_connect
 	mqtt_client.on_message = on_message
 
+	print("Connecting to broker")
 	mqtt_client.connect(BROKER_HOST, BROKER_PORT)
+
+	print("Connected! Start processing incoming data")
 	mqtt_client.loop_forever()
 
 	return 0
