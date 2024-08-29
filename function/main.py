@@ -7,9 +7,9 @@ from paho.mqtt.enums import CallbackAPIVersion
 
 
 # MARK: Constants
-DEBUG_MODE = False
+DEBUG_MODE = True
 CLIENT_ID = 'Swinberry MQTT Broker'
-BROKER_HOST = '127.0.0.1'
+BROKER_HOST = 'broker' # name of Mosquitto service in compose.yml
 BROKER_PORT = 1883
 USERNAME = 'swinuser'
 PASSWORD = 'swinpass'
