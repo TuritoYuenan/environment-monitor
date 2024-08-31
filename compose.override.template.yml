@@ -19,7 +19,7 @@ services:
       DOCKER_INFLUXDB_INIT_BUCKET: enter_your_bucket_name
       DOCKER_INFLUXDB_INIT_RETENTION: 1w
 
-  # Batch-Insert Function Configuration
+  # Weather Data Edge Function Configuration
   # 1. Copy your InfluxDB organisation name and admin token
   # 2. Set your InfluxDB timeout
   # 3. Optionally set other configurations

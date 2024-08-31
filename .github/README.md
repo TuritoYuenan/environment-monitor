@@ -1,4 +1,4 @@
-![Project Banner](.github/Banner.png)
+![Project Banner](./Banner.png)
 
 # Swinburne Weather Service (codename: ZimmerWetter)
 
@@ -6,17 +6,16 @@ This is a university project aiming towards studying, researching and applying I
 
 In short, an IoT Weather Station project.
 
-## How to deploy? / Manual
+## How to deploy this? / Manual
 
 ### Raspberry Pi Component
 
-1. Flash an operating system of your choice (or use your existing one)
-2. Configure the Pi's network interface to use a **Static IP**
-3. Install Docker and Docker Compose
-4. Clone this repository
-5. Copy the file `compose.override.template.yml` and name it `compose.override.yml`
-6. Enter required information into the `compose.override.yml` file
-7. Run `docker compose up -d` in your terminal (make sure the compose files are in the working directory)
+1. Prepare a Raspberry Pi 3+ with a static IP address, Git, and Docker Compose
+2. Clone this repository
+3. Create the file `pwfile` in `config/mosquitto` with 0700 permission
+4. Create the file `compose.override.yml` by copying `compose.override.template.yml`
+5. Enter required information into `compose.override.yml`
+6. In the terminal working at the repository's directory, run `docker compose up -d`
 
 ### Weather Station Component
 
