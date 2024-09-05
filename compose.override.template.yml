@@ -2,8 +2,6 @@
 # Secret file: Contains configurations, passwords, and other sensitive data
 #
 
-name: ZimmerWetter
-
 services:
   # InfluxDB Configuration
   # 1. Set your organisation name and admin token

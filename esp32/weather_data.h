@@ -84,7 +84,7 @@ struct WeatherData {
 	/// @return Weather station data formatted in a JSON document
 	String toJSON()
 	{
-		String JSONTemplate = R"({"humidity": {HMDT}, "pressure": {PRSR}, "temperature": {TEMP}, "rainfall_D": {RNFD}, "rainfall_H": {RNFH}, "windSpeedAvg": {WSAG}, "windSpeedMax": {WSMX}, "windDirection": {WDRT}})";
+		String JSONTemplate = R"({"humidity":{HMDT},"pressure":{PRSR},"temperature":{TEMP},"rainfall_day":{RNFD},"rainfall_hour":{RNFH},"wind_speed_avg":{WSAG},"wind_speed_max":{WSMX},"wind_direction":{WDRT}})";
 
 		JSONTemplate.replace("{PRSR}", String(pressure));
 		JSONTemplate.replace("{HMDT}", String(humidity));
