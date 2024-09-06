@@ -39,7 +39,7 @@ In short, an IoT Weather Station project.
 
 ![Technologies used in ZimmerWetter](https://github-readme-tech-stack.vercel.app/api/cards?title=Technologies+used+in+ZimmerWetter&borderRadius=0&lineHeight=5&lineCount=1&width=800&hideTitle=true&line1=html5%2CHTML%2CE34F26%3Bcss3%2CCSS%2C1572b6%3Btypescript%2CTypeScript%2C3178c6%3Bcplusplus%2CC%2B%2B%2C00599c%3Bsvelte%2CSvelteKit%2Cff5800%3Bpostgresql%2CXata%2C9f00ff%3Barduino%2CArduino%2C006dff%3Bespressif%2CESP8266%2CE7352C%3B)
 
-![Architecture Diagram](.github/Diagram.png)
+![Architecture Diagram](./Diagram.svg)
 
 ## Who is involved? / Credits
 
