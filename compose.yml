@@ -28,6 +28,10 @@ services:
     image: influxdb:alpine
     container_name: influxdb
     restart: on-failure:5
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_BUCKET: weather_data
+      DOCKER_INFLUXDB_INIT_RETENTION: 1w
     ports:
       - 8086:8086
     volumes:
@@ -47,6 +51,9 @@ services:
     build: ./function
     container_name: function
     restart: on-failure:5
+    environment:
+      INFLUXDB_V2_URL: http://database:8086
+      INFLUXDB_V2_TIMEOUT: 6000
     depends_on:
       - database
       - broker
@@ -58,6 +65,8 @@ services:
     image: chronograf:alpine
     container_name: chronograf
     restart: on-failure:5
+    environment:
+      INFLUXDB_URL: http://database:8086
     ports:
       - 8888:8888
     depends_on:
