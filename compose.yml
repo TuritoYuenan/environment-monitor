@@ -62,7 +62,7 @@ services:
   #     Chronograf Analytics      #
   # ############################# #
   analytics:
-    image: chronograf:alpine
+    image: chronograf:latest
     container_name: chronograf
     restart: on-failure:5
     environment:
