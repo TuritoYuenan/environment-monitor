@@ -1,0 +1,27 @@
+{
+	"name": "webapp",
+	"displayName": "Swinburne Weather Service",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"author": {
+		"name": "Turito Yuenan",
+		"email": "turitoyuenan@proton.me",
+		"url": "https://turitoyuenan.github.io"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
+	},
+	"devDependencies": {
+		"@sveltejs/vite-plugin-svelte": "^3.1.2",
+		"@tsconfig/svelte": "^5.0.4",
+		"svelte": "^4.2.19",
+		"svelte-check": "^3.8.6",
+		"tslib": "^2.7.0",
+		"typescript": "^5.5.4",
+		"vite": "^5.4.3"
+	}
+}
