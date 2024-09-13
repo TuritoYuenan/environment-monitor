@@ -2,9 +2,9 @@
 
 # Swinburne Weather Service (codename: ZimmerWetter)
 
-This is a university project aiming towards studying, researching and applying Internet-of-Things technology through developing and deploying a weather station system at the campus of Swinburne University of Technology in Ho Chi Minh city, Vietnam.
+This university project is about developing and deploying an IoT Weather Station system within the campus of Swinburne University@HCMC, providing a weather service for students, lecturers, staffs, and visitors of the campus.
 
-In short, an IoT Weather Station project.
+This is Minh Triet's first student project at Swinburne University.
 
 ## How to deploy this? / Manual
 
@@ -13,8 +13,8 @@ In short, an IoT Weather Station project.
 1. Prepare a Raspberry Pi 3+ with a static IP address, Git, and Docker Compose
 2. Clone this repository
 3. Create the file `pwfile` in `config/mosquitto` with 0700 permission
-4. Create the file `compose.override.yml` by copying `compose.override.template.yml`
-5. Enter required information into `compose.override.yml`
+4. Create the file `.env` by copying `.env.example`
+5. Enter required information into `.env`
 6. In the terminal working at the repository's directory, run `docker compose up -d`
 
 ### Weather Station Component
@@ -43,10 +43,10 @@ In short, an IoT Weather Station project.
 
 ## Who is involved? / Credits
 
-- Author: **Nguyen Ta Minh Triet**, Freshman @ Swinburne University, HCMC, Vietnam
-- Co-author: **Nguyen Khanh Phuc Thinh**, Sophomore @ Swinburne University, HCMC, Vietnam
-- Member: **Tong Duc Tu Tam**, Freshman @ Swinburne University, HCMC, Vietnam
-- Member: **Nguyen Nhat Minh**, Sophomore @ Swinburne University, HCMC, Vietnam
-- Member: **Huynh Nguyen Quoc Bao**, Junior @ Swinburne University, HCMC, Vietnam
+- Author: **Nguyen Ta Minh Triet**, K5 @ Swinburne University, HCMC, Vietnam
+- Co-author: **Nguyen Khanh Phuc Thinh**, K4 @ Swinburne University, HCMC, Vietnam
+- Member: **Tong Duc Tu Tam**, K5 @ Swinburne University, HCMC, Vietnam
+- Member: **Nguyen Nhat Minh**, K4 @ Swinburne University, HCMC, Vietnam
+- Member: **Huynh Nguyen Quoc Bao**, K3 @ Swinburne University, HCMC, Vietnam
 - Mentor: **Dr. Pham Van Dai**, Lecturer @ Swinburne University, Hanoi, Vietnam
 - Manager: **Ms. Titan Vo** @ Swinburne University Academic Department, HCMC, VIetnam

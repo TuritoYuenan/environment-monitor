@@ -30,6 +30,10 @@ services:
     restart: on-failure:5
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
       DOCKER_INFLUXDB_INIT_BUCKET: weather_data
       DOCKER_INFLUXDB_INIT_RETENTION: 1w
     ports:
@@ -53,6 +57,8 @@ services:
     restart: on-failure:5
     environment:
       INFLUXDB_V2_URL: http://database:8086
+      INFLUXDB_V2_ORG: ${INFLUXDB_ORG}
+      INFLUXDB_V2_TOKEN: ${INFLUXDB_TOKEN}
       INFLUXDB_V2_TIMEOUT: 6000
     depends_on:
       - database
@@ -67,6 +73,8 @@ services:
     restart: on-failure:5
     environment:
       INFLUXDB_URL: http://database:8086
+      INFLUXDB_USERNAME: ${INFLUXDB_USERNAME}
+      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD}
     ports:
       - 8888:8888
     depends_on:

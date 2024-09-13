@@ -8,10 +8,10 @@ docs/
 c_cpp_properties.json
 
 # Avoid uploading secret file
-compose.override.yml
 influx-configs
 secrets.h
 pwfile
+.env
 
 # Service data and logs
 data/
