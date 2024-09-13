@@ -10,6 +10,7 @@
 		"url": "https://turitoyuenan.github.io"
 	},
 	"scripts": {
+		"start": "vite --open",
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -23,5 +24,8 @@
 		"tslib": "^2.7.0",
 		"typescript": "^5.5.4",
 		"vite": "^5.4.3"
+	},
+	"dependencies": {
+		"@influxdata/influxdb3-client": "^0.10.0"
 	}
 }

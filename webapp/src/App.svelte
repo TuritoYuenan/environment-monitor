@@ -1,51 +1,76 @@
 <script lang="ts">
-	import svelteLogo from "./assets/svelte.svg";
-	import viteLogo from "/vite.svg";
-	import Counter from "./lib/Counter.svelte";
+	import Container from "./lib/Container.svelte";
+	import Measure from "./lib/Measure.svelte";
+
+	let windDirection: number = 0;
+
+	// Simulate dynamic change
+	setInterval(() => {
+		windDirection = Math.round(Math.random() * 360);
+	}, 3000);
 </script>
 
 <main>
-	<div>
-		<a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-			<img src={viteLogo} class="logo" alt="Vite Logo" />
-		</a>
-		<a href="https://svelte.dev" target="_blank" rel="noreferrer">
-			<img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-		</a>
-	</div>
-	<h1>Vite + Svelte</h1>
-
-	<div class="card">
-		<Counter />
-	</div>
-
-	<p>
-		Check out <a
-			href="https://github.com/sveltejs/kit#readme"
-			target="_blank"
-			rel="noreferrer">SvelteKit</a
-		>, the official Svelte app framework powered by Vite!
-	</p>
-
-	<p class="read-the-docs">
-		Click on the Vite and Svelte logos to learn more
-	</p>
+	<header>
+		<h1>29&deg;C</h1>
+		<p>Warm & Humid</p>
+	</header>
+	<section>
+		<Container>
+			<Measure icon="humidity_percentage" label="Air Humidity" value={100} unit="percent" />
+			<Measure icon="airwave" label="Air Pressure" value={101325} unit="pascals" />
+		</Container>
+		<Container>
+			<Measure icon="explore" label="Wind Direction" value={windDirection} unit="deg" />
+		</Container>
+		<Container>
+			<Measure icon="air" label="Wind Speed" />
+			<Measure label="Average" value={1.5} unit="m/s" />
+			<Measure label="Maximum" value={10.2} unit="m/s" />
+		</Container>
+		<Container>
+			<Measure icon="rainy" label="Rainfall" />
+			<Measure label="Hourly" value={12} unit="mm" />
+			<Measure label="Daily" value={46} unit="mm" />
+		</Container>
+	</section>
 </main>
 
 <style>
-	.logo {
-		height: 6em;
-		padding: 1.5em;
-		will-change: filter;
-		transition: filter 300ms;
+	main {
+		height: 100vh;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
 	}
-	.logo:hover {
-		filter: drop-shadow(0 0 2em #646cffaa);
+
+	header {
+		--tint-clr: #18192680;
+		--tint: linear-gradient(0deg, var(--tint-clr), var(--tint-clr));
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		color: var(--ctp-latte-crust);
+		background: var(--tint), url(/background.jpeg);
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		font-weight: bold;
 	}
-	.logo.svelte:hover {
-		filter: drop-shadow(0 0 2em #ff3e00aa);
+
+	header h1 {
+		font-size: 7rem;
 	}
-	.read-the-docs {
-		color: #888;
+
+	header p {
+		font-size: 3rem;
+	}
+
+	section {
+		padding: 1rem;
+		gap: 1rem;
+		display: flex;
+		flex-direction: column;
+		overflow: scroll;
 	}
 </style>
