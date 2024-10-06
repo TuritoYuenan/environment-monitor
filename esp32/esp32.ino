@@ -7,16 +7,15 @@
 */
 
 // Debug mode
-#define IS_DEBUGGING false
+#define IS_DEBUGGING true
 
 // MARK: Libraries
-// WiFi connection
-#include <WiFiClientSecure.h>
+// ESP32 libraries
+#include <NetworkClientSecure.h>
+#include <WiFi.h>
 
-// MQTT client
+// Third party libraries
 #include <PubSubClient.h>
-
-// Non-blocking code
 #include <BlockNot.h>
 
 // Internal libraries
@@ -31,45 +30,45 @@ char stationData[35];
 WeatherData data;
 
 /// @brief WiFi client
-WiFiClient wifi;
+NetworkClient wifi;
 
-/// @brief MQTT pub/sub client
-PubSubClient client(wifi);
+/// @brief MQTT client
+PubSubClient client;
 
 /// @brief Timer to log data
 BlockNot logTimer(5, SECONDS);
 
-/// @brief Tasks to do once at startup
+/// @brief Tasks to do at startup
 void setup() // MARK: Setup
 {
 	// Start Serial communication
-	Serial.begin(9600);
+	Serial.begin(115200);
 	Serial.setDebugOutput(IS_DEBUGGING);
 
 	// Connect to WiFi
 	connectWiFi(WIFI_NAME, WIFI_PASS);
 
 	// Setup MQTT client
-	client.setServer(IPAddress(MQTT_BROKER), 1883);
-	client.setCallback(mqttCallback);
+	client
+		.setClient(wifi)
+		.setServer(IPAddress(MQTT_BROKER), 1883)
+		.setCallback(handleMessage);
 
 	// Do time syncing stuffs
 	handleTime();
 }
 
-/// @brief Tasks to routinely do
+/// @brief Tasks to do routinely
 void loop() // MARK: Loop
 {
-	if (!client.connected()) {
-		connectBroker();
-	}
+	while (!client.connected()) { connectBroker(); }
 
 	// Get data from weather station. Redo if format is wrong
-	getData(stationData);
-	if (stationData[0] != 'c') { return; }
+	// getData(stationData);
+	// if (stationData[0] != 'c') { return; }
 
 	// Store weather station data
-	data = WeatherData(stationData);
+	data = WeatherData();
 	String weatherJSON = data.toJSON();
 
 	// Log data
@@ -85,16 +84,14 @@ void loop() // MARK: Loop
 /// @param topic MQTT Topic where message is received
 /// @param message Message content
 /// @param length Message length
-void mqttCallback(char* topic, uint8_t* message, unsigned int length) // MARK: Callback
+void handleMessage(char* topic, uint8_t* message, unsigned int length) // MARK: Callback
 {
 	Serial.print("Message arrived on topic: ");
 	Serial.print(topic);
 	Serial.print(". Message: ");
-	String messageTemp;
 
 	for (int i = 0; i < length; i++) {
 		Serial.print((char)message[i]);
-		messageTemp += (char)message[i];
 	}
 }
 
@@ -120,24 +117,22 @@ void connectWiFi(const char* ssid, const char* password) // MARK: WiFi
 
 /// @brief Connect to MQTT Broker
 /// @author Kallen Houston
-void connectBroker() // MARK: MQTT Broker
+void connectBroker() // MARK: MQTT
 {
-	while (!client.connected()) {
-		Serial.println("Connecting to MQTT...");
+	Serial.println("Connecting to MQTT Broker...");
 
-		if (client.connect("ESP32Client")) {
-			Serial.println("Connected to MQTT");
-		} else {
-			Serial.print("Failed, rc=");
-			Serial.print(client.state());
-			Serial.println(" Retrying in 5 seconds...");
-			delay(5000);
-		}
+	if (client.connect(BROKER_CLIENT_ID, BROKER_USERNAME, BROKER_PASSWORD)) {
+		Serial.println("Connected to MQTT Broker");
+	} else {
+		Serial.print("Failed connecting to MQTT Broker: ");
+		Serial.println(client.state());
+		Serial.println("Retrying in 5 seconds...\n");
+		delay(5000);
 	}
 }
 
 /// @brief Sync with with NTP servers to get current time
-void handleTime() // MARK: NTP Time
+void handleTime() // MARK: NTP
 {
 	configTime(7 * 3600, 0, "asia.pool.ntp.org", "pool.ntp.org", "time.nist.gov");
 
