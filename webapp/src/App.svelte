@@ -33,6 +33,11 @@
 			<Measure label="Hourly" value={12} unit="mm" />
 			<Measure label="Daily" value={46} unit="mm" />
 		</Container>
+		<Container>
+			<footer>
+				Swinburne Weather Service. &copy; 2024 Minh Triet et al.
+			</footer>
+		</Container>
 	</section>
 </main>
 
