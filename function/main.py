@@ -8,7 +8,7 @@ from paho.mqtt.enums import CallbackAPIVersion
 
 # MARK: Constants
 DEBUG_MODE = True
-CLIENT_ID = 'Weather Data Edge Function'
+CLIENT_ID = 'Weather Data ETL Stream'
 BROKER_HOST = 'broker' # name of Mosquitto service in compose.yml
 BROKER_PORT = 1883
 USERNAME = 'swinuser'
@@ -78,7 +78,7 @@ def main():
 
 	print("Entering credentials")
 	mqtt_client = Client(CallbackAPIVersion.VERSION2, CLIENT_ID)
-	mqtt_client.username_pw_set(USERNAME, PASSWORD)
+	# mqtt_client.username_pw_set(USERNAME, PASSWORD)
 	mqtt_client.user_data_set(write_client)
 
 	print("Setting up callback functionality")
