@@ -121,7 +121,7 @@ void connectBroker() // MARK: MQTT
 {
 	Serial.println("Connecting to MQTT Broker...");
 
-	if (client.connect(BROKER_CLIENT_ID, BROKER_USERNAME, BROKER_PASSWORD)) {
+	if (client.connect(BROKER_CLIENT_ID)) {
 		Serial.println("Connected to MQTT Broker");
 	} else {
 		Serial.print("Failed connecting to MQTT Broker: ");
