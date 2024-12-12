@@ -1,5 +1,6 @@
 import json
-from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.influxdb_client import InfluxDBClient
+from influxdb_client.client.write.point import Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client.rest import ApiException
 from paho.mqtt.client import Client, MQTTMessage

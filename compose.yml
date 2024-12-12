@@ -16,9 +16,9 @@ services:
       - 1883:1883
       - 9001:9001
     volumes:
-      - ./config/mosquitto:/mosquitto/config
-      - ./data/mosquitto:/mosquitto/data
-      - ./data/mqtt-logs:/mosquitto/logs
+      - ./docker/conf-mosquitto:/mosquitto/config
+      - ./docker/data-mosquitto:/mosquitto/data
+      - ./docker/logs-mosquitto:/mosquitto/logs
     stdin_open: true
     tty: true
 
@@ -40,8 +40,8 @@ services:
     ports:
       - 8086:8086
     volumes:
-      - ./config/influxdb:/etc/influxdb2
-      - ./data/influxdb:/var/lib/influxdb2
+      - ./docker/conf-influxdb:/etc/influxdb2
+      - ./docker/data-influxdb:/var/lib/influxdb2
     healthcheck:
       test: wget --no-verbose --tries=1 --output-document=/dev/null http://0.0.0.0:8086/ &> /dev/null || exit 1
       interval: 60s
@@ -64,27 +64,3 @@ services:
     depends_on:
       - database
       - broker
-
-  # ############################# #
-  #     Chronograf Analytics      #
-  # ############################# #
-  analytics:
-    image: chronograf:1.10
-    container_name: chronograf
-    restart: on-failure:5
-    environment:
-      INFLUXDB_URL: http://database:8086
-      INFLUXDB_USERNAME: ${INFLUXDB_USERNAME}
-      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD}
-    ports:
-      - 8888:8888
-    depends_on:
-      - database
-    volumes:
-      - ./data/chronograf:/var/lib/chronograf
-    healthcheck:
-      test: wget --no-verbose --tries=1 --output-document=/dev/null http://0.0.0.0:8888/ &> /dev/null || exit 1
-      interval: 60s
-      retries: 5
-      start_period: 20s
-      timeout: 10s

@@ -11,8 +11,9 @@ c_cpp_properties.json
 influx-configs
 secrets.h
 pwfile
+.venv
 .env
 
 # Service data and logs
-data/
-log/
+docker/data-*/
+docker/logs-*/

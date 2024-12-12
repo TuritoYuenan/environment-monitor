@@ -1,13 +1,12 @@
 <script lang="ts">
 	import Container from "./lib/Container.svelte";
 	import Measure from "./lib/Measure.svelte";
+	import { client } from "./influx";
 
-	let windDirection: number = 0;
-
-	// Simulate dynamic change
-	setInterval(() => {
-		windDirection = Math.round(Math.random() * 360);
-	}, 3000);
+	const query = client.query(
+		`SELECT * FROM "weather" ORDER BY time DESC LIMIT 1`,
+		'weather_data', { type: 'sql' }
+	).return();
 </script>
 
 <main>
@@ -21,7 +20,7 @@
 			<Measure icon="airwave" label="Air Pressure" value={101325} unit="pascals" />
 		</Container>
 		<Container>
-			<Measure icon="explore" label="Wind Direction" value={windDirection} unit="deg" />
+			<Measure icon="explore" label="Wind Direction" value={90} unit="deg" />
 		</Container>
 		<Container>
 			<Measure icon="air" label="Wind Speed" />
