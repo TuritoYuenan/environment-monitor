@@ -6,12 +6,11 @@
 
 <style>
 	div {
-		padding: 2rem;
+		padding: 1rem;
 		display: flex;
 		gap: 1rem;
-		justify-content: space-between;
-		border-radius: 1rem;
-		background-color: var(--ctp-latte-crust);
-		filter: drop-shadow(0 0 3px black);
+		border-radius: 0.5rem;
+		background-color: var(--ctp-mocha-surface0);
+		filter: drop-shadow(0 0 2px var(--ctp-mocha-surface0));
 	}
 </style>

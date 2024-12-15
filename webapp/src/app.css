@@ -2,11 +2,11 @@
 
 :root {
 	font-size: 16px;
-	font-family: Barlow, system-ui, sans-serif;
+	font-family: "Open Sans", system-ui, sans-serif;
 
 	color-scheme: light dark;
-	color: black;
-	background-color: var(--ctp-latte-red);
+	color: var(--ctp-mocha-text);
+	background-color: var(--ctp-mocha-base);
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;

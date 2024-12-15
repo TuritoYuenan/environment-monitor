@@ -18,16 +18,15 @@
 <style>
 	div {
 		display: flex;
-		gap: 0.5rem;
+		gap: 1rem;
 		align-items: center;
 	}
 
 	div span {
-		font-size: 4em;
+		font-size: 3em;
 	}
 
 	div p {
-		font-size: 2em;
-		font-weight: bold;
+		font-size: 1.6em;
 	}
 </style>
