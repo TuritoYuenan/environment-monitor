@@ -64,3 +64,10 @@ services:
     depends_on:
       - database
       - broker
+
+  mock:
+    build: ./mock-station
+    container_name: mock-station
+    restart: on-failure:5
+    depends_on:
+      - broker
