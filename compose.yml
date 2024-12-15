@@ -50,11 +50,11 @@ services:
       timeout: 10s
 
   # ############################# #
-  #  Weather Data Edge Function   #
+  #  MQTT-to-Influx ETL Pipeline  #
   # ############################# #
-  function:
-    build: ./function
-    container_name: function
+  pipeline:
+    build: ./etl-pipeline
+    container_name: etl-pipeline
     restart: on-failure:5
     environment:
       INFLUXDB_V2_URL: http://database:8086

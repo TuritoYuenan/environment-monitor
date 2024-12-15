@@ -2,11 +2,10 @@
 FROM python:alpine
 
 # Metadata
-LABEL org.opencontainers.image.title="Weather Data Edge Function"
+LABEL org.opencontainers.image.title="Weather Data ETL Pipeline"
 LABEL org.opencontainers.image.authors="turitoyuenan@proton.me"
 LABEL org.opencontainers.image.version="latest"
-LABEL org.opencontainers.image.description="Edge function that \
-	transfer data from Mosquitto broker to InfluxDB"
+LABEL org.opencontainers.image.description="Transfer data from MQTT broker to InfluxDB"
 
 # Deploy function in /app directory
 WORKDIR /app

@@ -9,7 +9,7 @@ from paho.mqtt.enums import CallbackAPIVersion
 
 # MARK: Constants
 DEBUG_MODE = True
-CLIENT_ID = 'Weather Data ETL Stream'
+CLIENT_ID = 'MQTT-to-InfluxDB ETL Pipeline'
 BROKER_HOST = 'broker' # name of Mosquitto service in compose.yml
 BROKER_PORT = 1883
 USERNAME = 'swinuser'
