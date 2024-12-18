@@ -56,7 +56,7 @@ def main():
 	print("Connected! Start generating weather data")
 	while True:
 		generate_data(mqtt_client)
-		time.sleep(1)
+		time.sleep(5)
 
 
 # MARK: Main execution
