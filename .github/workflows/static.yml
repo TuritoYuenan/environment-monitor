@@ -22,6 +22,10 @@ concurrency:
 
 jobs:
   build:
+    env:
+      VITE_INFLUXDB_URL: ${{ secrets.VITE_INFLUXDB_URL }}
+      VITE_INFLUXDB_TOKEN: ${{ secrets.VITE_INFLUXDB_TOKEN }}
+      VITE_INFLUXDB_ORG: ${{ secrets.VITE_INFLUXDB_ORG }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

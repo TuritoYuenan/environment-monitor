@@ -20,10 +20,8 @@ export function queryExample(fluxQuery: string): Promise<{ [key: string]: any }[
 			},
 			complete() {
 				console.log('QUERY FINISHED')
-				// Introduce a delay of 2 seconds before resolving the promise
-				setTimeout(() => {
-					resolve(result)
-				}, 4000);
+				// Introduce a delay before resolving the promise
+				setTimeout(() => { resolve(result) }, 4000);
 			},
 		})
 	})
