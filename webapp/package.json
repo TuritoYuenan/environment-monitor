@@ -26,7 +26,6 @@
 		"vite": "^5.4.11"
 	},
 	"dependencies": {
-		"@influxdata/influxdb-client-apis": "^1.35.0",
-		"@influxdata/influxdb3-client": "^0.10.0"
+		"@influxdata/influxdb-client-browser": "^1.35.0"
 	}
 }

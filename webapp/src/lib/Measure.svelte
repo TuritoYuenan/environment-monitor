@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let icon: string = '';
 	export let label: string;
-	export let value: number | false = false;
+	export let value: string | number | false = false;
 	export let unit: string = '';
 </script>
 
