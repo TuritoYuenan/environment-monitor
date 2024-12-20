@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { fields, queryExample } from "./influx";
+	import fields from "./fields";
+	import { fluxQuery } from "./influx";
 	import Card from "./lib/Card.svelte";
 	import Metric from "./lib/Metric.svelte";
 
@@ -14,7 +15,7 @@
 	let data: { [key: string]: any }[] = [];
 
 	$: {
-		queryExample(query)
+		fluxQuery(query)
 			.then((result) => {
 				data = result;
 				console.log(data);
