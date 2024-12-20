@@ -6,7 +6,7 @@ const token = import.meta.env.VITE_INFLUXDB_TOKEN || 'my-token'
 
 const queryApi = new InfluxDB({ url, token }).getQueryApi(org)
 
-export function fluxQuery(fluxQuery: string): Promise<{ [key: string]: any }[]> {
+export default function(fluxQuery: string): Promise<{ [key: string]: any }[]> {
 	return new Promise((resolve, reject) => {
 		const result: Array<{ [key: string]: any; }> = []
 
@@ -16,13 +16,11 @@ export function fluxQuery(fluxQuery: string): Promise<{ [key: string]: any }[]> 
 				result.push(o)
 			},
 			error(error) {
-				console.error(error)
 				reject(error)
 			},
 			complete() {
-				console.table(result)
 				// Introduce a delay before resolving the promise
-				setTimeout(() => { resolve(result) }, 4000);
+				setTimeout(() => { resolve(result) }, 5000);
 			},
 		})
 	})

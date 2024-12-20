@@ -1,6 +1,6 @@
 <script lang="ts">
 	import fields from "./fields";
-	import { fluxQuery } from "./influx";
+	import fluxQuery from "./influx";
 	import Card from "./lib/Card.svelte";
 	import Metric from "./lib/Metric.svelte";
 
@@ -19,7 +19,7 @@
 		fluxQuery(query)
 			.then((result) => {
 				buffer = result;
-				console.log(buffer);
+				console.table(buffer);
 				if (buffer.length > 0) {
 					data = buffer.filter((row) => row._field !== "temperature");
 					temperature = buffer.find((row) => row._field === "temperature")?._value as number;
