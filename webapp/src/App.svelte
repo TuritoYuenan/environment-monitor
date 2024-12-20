@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fields, queryExample } from "./influx";
-	import Container from "./lib/Container.svelte";
-	import Measure from "./lib/Measure.svelte";
+	import Card from "./lib/Card.svelte";
+	import Metric from "./lib/Metric.svelte";
 
 	const query = `
     from(bucket: "weather_data")
@@ -35,15 +35,15 @@
 		<h2>Overview</h2>
 
 		<div>
-			{#each data as measurement}
-				<Container>
-					<Measure
-						icon={fields[measurement._field].icon}
-						label={fields[measurement._field].label}
-						value={fields[measurement._field].sanitise(measurement._value)}
-						unit={fields[measurement._field].unit}
+			{#each data as metric}
+				<Card>
+					<Metric
+						icon={fields[metric._field].icon}
+						label={fields[metric._field].label}
+						value={fields[metric._field].sanitise(metric._value)}
+						unit={fields[metric._field].unit}
 					/>
-				</Container>
+				</Card>
 			{/each}
 		</div>
 	</section>
