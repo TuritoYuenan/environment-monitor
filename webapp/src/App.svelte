@@ -8,17 +8,23 @@
     from(bucket: "weather_data")
     |> range(start: -5s)
     |> filter(fn: (r) => r._measurement == "weather")
-	|> filter(fn: (r) => r._field != "temperature")
-    |> yield(name: "_results")
     `;
 
-	let data: { [key: string]: any }[] = [];
+	let buffer: Array<{ [key: string]: any }> = [];
+	let data: typeof buffer = [];
+	let temperature: number = NaN;
+	let lastUpdated: Date;
 
 	$: {
 		fluxQuery(query)
 			.then((result) => {
-				data = result;
-				console.log(data);
+				buffer = result;
+				console.log(buffer);
+				if (buffer.length > 0) {
+					data = buffer.filter((row) => row._field !== "temperature");
+					temperature = buffer.find((row) => row._field === "temperature")?._value as number;
+					lastUpdated = new Date(buffer[0]._time);
+				}
 			})
 			.catch((error) => {
 				console.error("Error fetching data:", error);
@@ -28,12 +34,15 @@
 
 <main>
 	<header style:grid-area="header" class="parallax">
-		<h1>29&deg;C</h1>
+		<h1>{fields["temperature"].sanitise(temperature)}&deg;C</h1>
 		<p>Warm & Humid</p>
 	</header>
 
 	<section style:grid-area="main">
 		<h2>Overview</h2>
+		{#if lastUpdated}
+			<em>Last updated {lastUpdated.toLocaleTimeString()}</em>
+		{/if}
 
 		<div>
 			{#each data as metric}
