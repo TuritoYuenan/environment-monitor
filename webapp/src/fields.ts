@@ -1,3 +1,14 @@
+export function windAngleToDirection(angle: number): string {
+	let label: string = ""
+
+	if (292.5 < angle || angle < 67.5) label += "N"
+	if (112.5 < angle && angle < 247.5) label += "S"
+	if (22.5 < angle && angle < 157.5) label += "E"
+	if (202.5 < angle && angle < 337.5) label += "W"
+
+	return label
+}
+
 const fields: Record<string, {
 	label: string,
 	icon: string,
