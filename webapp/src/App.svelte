@@ -33,18 +33,24 @@
 </script>
 
 <main>
-	<header style:grid-area="header" class="parallax">
+	<header style:grid-area="h" class="parallax">
 		<h1>{fields["temperature"].sanitise(temperature)}&deg;C</h1>
-		<p>Warm & Humid</p>
+		<p><span class="material-symbols-sharp">weather_mix</span>Warm & Humid</p>
+		<p><span class="material-symbols-sharp">location_on</span>Tan Binh, HCMC, Vietnam</p>
 	</header>
 
-	<section style:grid-area="main">
+	<section style:grid-area="m">
 		<h2>Overview</h2>
 		{#if lastUpdated}
 			<em>Last updated {lastUpdated.toLocaleTimeString()}</em>
 		{/if}
 
 		<div>
+			{#if data.length === 0}
+				<Card>
+					<p>Receiving the latest weather data...</p>
+				</Card>
+			{/if}
 			{#each data as metric}
 				<Card>
 					<Metric
@@ -58,7 +64,7 @@
 		</div>
 	</section>
 
-	<footer style:grid-area="footer">
+	<footer style:grid-area="f">
 		<p>Swinburne Weather Service. &copy; 2024 Team OrangeCat.</p>
 	</footer>
 </main>
@@ -69,11 +75,11 @@
 		display: grid;
 		grid-template-columns: 35% auto;
 		grid-template-rows: 1fr auto;
-		grid-template-areas: "header main" "header footer";
+		grid-template-areas: "h m" "h f";
 	}
 
 	.parallax {
-		--tint-clr: #1e1e2e70;
+		--tint-clr: #1e1e2eaa;
 		--tint: linear-gradient(0deg, var(--tint-clr), var(--tint-clr));
 		background:
 			var(--tint),
@@ -82,17 +88,22 @@
 	}
 
 	header {
-		padding: 1rem;
+		padding: 2rem;
 		align-content: center;
-		text-align: center;
 	}
 
 	header h1 {
-		font-size: 5rem;
+		font-size: 7rem;
 	}
 
 	header p {
-		font-size: 2rem;
+		font-size: 1.5rem;
+	}
+
+	header span.material-symbols-sharp {
+		padding-right: 0.8rem;
+		font-size: 2em;
+		translate: 0 0.3em;
 	}
 
 	section {
@@ -106,6 +117,7 @@
 
 	footer {
 		padding: 0.5rem 1rem;
+		background-color: var(--ctp-mocha-mantle);
 	}
 
 	div {
@@ -117,15 +129,11 @@
 
 	@media (width <= 1000px) {
 		main {
-			grid-template-columns: 1fr;
+			display: block;
 		}
 
 		header {
 			height: 40vh;
-		}
-
-		section {
-			overflow: unset;
 		}
 	}
 </style>
