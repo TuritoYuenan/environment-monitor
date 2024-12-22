@@ -1,4 +1,4 @@
-import json
+import json, logging
 from influxdb_client.client.influxdb_client import InfluxDBClient
 from influxdb_client.client.write.point import Point
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -17,79 +17,80 @@ PASSWORD = 'swinpass'
 TOPIC = 'swinburne/hcmc_a35'
 
 
+def extract(message: MQTTMessage) -> dict:
+	"""Extract data from MQTT broker
+	"""
+	payload = message.payload.decode('utf-8')
+	return json.loads(payload)
+
+
+def transform(data: dict) -> Point:
+	"""Transform data to InfluxDB point
+	"""
+	return (
+		Point('weather').tag('city', 'HCMC').tag('campus', 'A35')
+		.field('humidity', data['humidity'])
+		.field('pressure', data['pressure'])
+		.field('temperature', data['temperature'])
+		.field('rainfall_day', data['rainfall_day'])
+		.field('rainfall_hour', data['rainfall_hour'])
+		.field('wind_speed_avg', data['wind_speed_avg'])
+		.field('wind_speed_max', data['wind_speed_max'])
+		.field('wind_direction', data['wind_direction'])
+	)
+
+
+def load(data: Point, database: InfluxDBClient):
+	"""Load data to InfluxDB
+	"""
+	try:
+		write_api = database.write_api(SYNCHRONOUS)
+		write_api.write('weather_data', record = data)
+	except ApiException:
+		logging.error('3. Error: Connection to InfluxDB is unauthorised')
+	except:
+		logging.error('3. Error: Something wrong happened')
+
+
 # MARK: Connection callback
 def on_connect(client: Client, userdata, flags, reason_code, properties):
-	"""Routine to do when connected to the MQTT broker
-
-	Args:
-		client (Client): MQTT Client
-		userdata (InfluxDBClient): Client to save data
-		flags (unknown): Program flags
-		reason_code (_type_): _description_
-		properties (_type_): _description_
-	"""
-	print('Connected to broker')
+	logging.info('Connected to broker')
 
 	client.subscribe(TOPIC)
-	print(f'Subscribed to {TOPIC} topic')
+	logging.info('Subscribed to topic: %s', TOPIC)
 
 
 # MARK: Message callback
 def on_message(client: Client, userdata: InfluxDBClient, message: MQTTMessage):
-	"""Routine to do when received an MQTT message
+	if DEBUG_MODE: logging.info('1. Extracting message')
+	extracted = extract(message)
 
-	Args:
-		client (Client): MQTT Client
-		user_data (InfluxDBClient): Client to save data
-		message (MQTTMessage): The received message. Needs to be decoded
-	"""
-	write_api = userdata.write_api(SYNCHRONOUS)
-	if DEBUG_MODE: print('Begin message processing')
+	if DEBUG_MODE: logging.info('2. Transforming to InfluxDB point')
+	transformed = transform(extracted)
 
-	payload = message.payload.decode('utf-8')
-	extract = json.loads(payload)
-	if DEBUG_MODE: print('Decoded and extracted data')
-
-	point = (
-		Point('weather').tag('city', 'HCMC').tag('campus', 'A35')
-		.field('humidity', extract['humidity'])
-		.field('pressure', extract['pressure'])
-		.field('temperature', extract['temperature'])
-		.field('rainfall_day', extract['rainfall_day'])
-		.field('rainfall_hour', extract['rainfall_hour'])
-		.field('wind_speed_avg', extract['wind_speed_avg'])
-		.field('wind_speed_max', extract['wind_speed_max'])
-		.field('wind_direction', extract['wind_direction'])
-	)
-
-	try:
-		write_api.write('weather_data', record = point)
-		if DEBUG_MODE: print('Uploaded data')
-	except ApiException:
-		print('Connection to InfluxDB is unauthorised')
-	except:
-		print('Something wrong happened')
+	if DEBUG_MODE: logging.info('3. Loading to InfluxDB')
+	load(transformed, userdata)
 
 
 # MARK: Main procedure
 def main():
 	"""Main procedure
 	"""
-	write_client = InfluxDBClient.from_env_properties()
+	database_client = InfluxDBClient.from_env_properties()
 
-	print("Entering credentials")
+	logging.info("Entering credentials")
 	mqtt_client = Client(CallbackAPIVersion.VERSION2, CLIENT_ID)
+	mqtt_client.user_data_set(database_client)
 	# mqtt_client.username_pw_set(USERNAME, PASSWORD)
-	mqtt_client.user_data_set(write_client)
 
-	print("Setting up callback functionality")
+	logging.info("Setting up callback functionality")
 	mqtt_client.on_connect = on_connect
 	mqtt_client.on_message = on_message
 
-	print("Connecting to broker")
+	logging.info("Connecting to broker")
 	mqtt_client.connect(BROKER_HOST, BROKER_PORT)
 
-	print("Connected! Start processing incoming data")
+	logging.info("Connected! Start processing incoming data")
 	mqtt_client.loop_forever()
 
 	return 0
