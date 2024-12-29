@@ -25,3 +25,9 @@ export default function(fluxQuery: string): Promise<{ [key: string]: any }[]> {
 		})
 	})
 }
+
+export const query = `
+from(bucket: "weather_data")
+|> range(start: -5s)
+|> filter(fn: (r) => r._measurement == "weather")
+`;
