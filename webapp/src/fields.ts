@@ -24,8 +24,8 @@ const fields: Record<string, {
 	"pressure": {
 		label: "Air Pressure",
 		icon: "airwave",
-		unit: "hPa",
-		sanitise: (value) => (value / 1000).toFixed(3)
+		unit: "Pa",
+		sanitise: (value) => value.toString()
 	},
 	"temperature": {
 		label: "Temperature",

@@ -35,15 +35,3 @@ body {
 #app {
 	display: contents;
 }
-
-button {
-	padding: 1rem;
-	border-radius: 1rem;
-	background-color: var(--ctp-latte-text);
-	cursor: pointer;
-	transition: 1s cubic-bezier(0.075, 0.82, 0.165, 1);
-}
-
-button:hover {
-	scale: 1.1;
-}
