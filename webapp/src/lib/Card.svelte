@@ -1,4 +1,4 @@
-<div>
+<div class="shadow">
 	<slot>
 		<h2>Lorem Ipsum</h2>
 	</slot>
@@ -11,6 +11,5 @@
 		gap: 1rem;
 		border-radius: 0.5rem;
 		background-color: var(--ctp-mocha-surface0);
-		filter: drop-shadow(0 0 2px var(--ctp-mocha-surface0));
 	}
 </style>

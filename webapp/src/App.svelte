@@ -2,9 +2,20 @@
 	import fields from "./fields";
 	import fluxQuery, { query } from "./influx";
 	import Overview from "./lib/Overview.svelte";
+	import Settings from "./lib/Settings.svelte";
 	import Tabs from "./lib/Tabs.svelte";
 
 	let currentTab = "overview";
+
+	const tabs = [
+		{ name: "overview", label: "Overview" },
+		{ name: "timeline", label: "Timeline" },
+		{ name: "settings", label: "Settings" },
+	];
+
+	let settings = {
+		tempUnit: "celsius",
+	};
 
 	let buffer: Array<{ [key: string]: any }> = [];
 	let data: typeof buffer = [];
@@ -18,7 +29,9 @@
 				console.table(buffer);
 				if (buffer.length > 0) {
 					data = buffer.filter((row) => row._field !== "temperature");
-					temperature = buffer.find((row) => row._field === "temperature")?._value as number;
+					temperature = buffer.find(
+						(row) => row._field === "temperature",
+					)?._value as number;
 				}
 			})
 			.catch((error) => {
@@ -28,21 +41,21 @@
 </script>
 
 <main>
-	<header style:grid-area="h" class="parallax">
-		<h1>{fields["temperature"].sanitise(temperature)}&deg;C</h1>
+	<header style:grid-area="h" class="parallax shadow">
+		<h1>{fields["temperature"].format(temperature)}</h1>
 		<p>
-			<span class="material-symbols-sharp">weather_mix</span>Warm & Humid
+			<span class="material-symbols-sharp">weather_mix</span>
+			Warm & Humid
 		</p>
 		<p>
-			<span class="material-symbols-sharp">location_on</span>Tan Binh,
-			HCMC, Vietnam
+			<span class="material-symbols-sharp">location_on</span>
+			Tan Binh, HCMC, Vietnam
 		</p>
 	</header>
 
-	<Tabs bind:currentTab />
+	<Tabs {tabs} bind:currentTab />
 
 	<section style:grid-area="m">
-
 		{#if currentTab === "overview"}
 			<Overview {data} />
 		{/if}
@@ -52,7 +65,7 @@
 		{/if}
 
 		{#if currentTab === "settings"}
-			<h2>Settings</h2>
+			<Settings bind:settings />
 		{/if}
 	</section>
 
@@ -63,7 +76,10 @@
 
 <style>
 	main {
+		--spacing: 2rem;
 		height: 100vh;
+		padding: var(--spacing);
+		gap: var(--spacing);
 		display: grid;
 		grid-template-columns: 35% auto;
 		grid-template-rows: auto 1fr auto;
@@ -81,6 +97,7 @@
 
 	header {
 		padding: 2rem;
+		border-radius: 1rem;
 		align-content: center;
 	}
 
@@ -99,7 +116,6 @@
 	}
 
 	section {
-		padding: 1rem;
 		gap: 1rem;
 		display: flex;
 		flex-direction: column;
@@ -108,17 +124,19 @@
 	}
 
 	footer {
-		padding: 0.5rem 1rem;
+		padding: 0.6rem 1rem;
+		border-radius: 1rem;
 		background-color: var(--ctp-mocha-mantle);
 	}
 
 	@media (width <= 1000px) {
 		main {
+			--spacing: 1rem;
 			display: block;
 		}
 
 		header {
-			height: 30vh;
+			height: max(fit-content, 30vh);
 		}
 
 		header h1 {
