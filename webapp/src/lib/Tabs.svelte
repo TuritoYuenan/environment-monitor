@@ -16,8 +16,8 @@
 
 <style>
 	nav {
-		display: flex;
 		gap: 0.5rem;
+		display: flex;
 		justify-content: center;
 		text-align: center;
 	}
@@ -26,7 +26,7 @@
 		width: clamp(6.5rem, 10vw, 10rem);
 		padding: 0.5rem 1rem;
 		background-color: var(--ctp-mocha-surface0);
-		border-radius: 1rem;
+		border-radius: 2rem;
 
 		/* Undo browser default */
 		border: none;
@@ -38,5 +38,11 @@
 	nav button.active {
 		color: var(--ctp-mocha-base);
 		background-color: var(--ctp-mocha-red);
+	}
+
+	@media (width <= 900px) {
+		nav {
+			margin-block: 1rem;
+		}
 	}
 </style>

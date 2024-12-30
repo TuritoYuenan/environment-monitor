@@ -13,10 +13,6 @@
 		{ name: "settings", label: "Settings" },
 	];
 
-	let settings = {
-		tempUnit: "celsius",
-	};
-
 	let buffer: Array<{ [key: string]: any }> = [];
 	let data: typeof buffer = [];
 
@@ -65,7 +61,7 @@
 		{/if}
 
 		{#if currentTab === "settings"}
-			<Settings bind:settings />
+			<Settings />
 		{/if}
 	</section>
 
@@ -129,7 +125,7 @@
 		background-color: var(--ctp-mocha-mantle);
 	}
 
-	@media (width <= 1000px) {
+	@media (width <= 900px) {
 		main {
 			--spacing: 1rem;
 			display: block;

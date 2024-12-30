@@ -7,8 +7,6 @@
 <style>
 	div {
 		padding: 1rem;
-		display: flex;
-		gap: 1rem;
 		border-radius: 0.5rem;
 		background-color: var(--ctp-mocha-surface0);
 	}
