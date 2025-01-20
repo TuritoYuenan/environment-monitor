@@ -10,8 +10,8 @@
 		"url": "https://turitoyuenan.github.io"
 	},
 	"scripts": {
-		"start": "vite --open",
-		"dev": "vite",
+		"start": "vite --open --host",
+		"dev": "vite --open",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
